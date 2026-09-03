@@ -1,0 +1,649 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{bookmacro-lua}[2026/09/04 LuaLaTeX book macro preset]
+
+% ============================================================
+% Base / layout
+% ============================================================
+
+\RequirePackage{geometry}
+\RequirePackage{graphicx}
+\RequirePackage{fancyhdr}
+\RequirePackage{subfiles}
+\RequirePackage{etoolbox}
+
+\geometry{twoside,inner=25mm,outer=20mm,top=25mm,bottom=25mm}
+
+% ============================================================
+% Drawing / graphics
+% ============================================================
+
+\RequirePackage{tikz}
+\usetikzlibrary{
+  arrows,
+  intersections,
+  matrix,
+  arrows.meta,
+  positioning,
+  shapes.misc,
+  shapes.geometric,
+  fit,
+  calc
+}
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+
+% ============================================================
+% Mathematics / science / chemistry
+% ============================================================
+
+\RequirePackage{amsmath,amssymb}
+\RequirePackage{amsthm}
+\RequirePackage{amstext}
+\RequirePackage{bm}
+\RequirePackage{mleftright}
+\RequirePackage{braket}
+\RequirePackage{physics2}
+\RequirePackage{siunitx}
+
+% Modern replacement for old chemarrow
+\RequirePackage{chemarr}
+\RequirePackage[version=4]{mhchem}
+\RequirePackage{chemfig}
+\setchemfig{atom sep=1.785em}
+\setchemfig{double bond sep=0.357em}
+
+% ============================================================
+% Boxes / text decoration
+% ============================================================
+
+\RequirePackage{ascmac}
+\RequirePackage{circledsteps}
+\RequirePackage[listings,xparse]{tcolorbox}
+\tcbuselibrary{raster,skins,listings,breakable,theorems}
+\RequirePackage{setspace}
+\RequirePackage{needspace}
+\RequirePackage[normalem]{ulem}
+% \RequirePackage{jumoline}
+
+% ============================================================
+% Lists / tables / floats
+% ============================================================
+
+\RequirePackage{multicol}
+\RequirePackage{enumitem}
+\RequirePackage{xcolor}
+\RequirePackage{here}
+\RequirePackage{titlesec}
+\RequirePackage{multirow}
+\RequirePackage{diagbox}
+\RequirePackage{caption}
+\RequirePackage{placeins}
+
+\captionsetup{
+  margin=2em,
+  aboveskip=0.75em,
+  belowskip=-0.5em,
+  font={small,stretch=0.9}
+}
+\captionsetup[table]{
+  margin=2em,
+  aboveskip=0.125em,
+  belowskip=-0.25em,
+  font={small,stretch=0.9}
+}
+
+% ============================================================
+% Algorithms
+% ============================================================
+
+\RequirePackage[chapter]{algorithm}
+\RequirePackage{algpseudocode}
+
+\algnewcommand\algorithmicinput{{\bfseries 入力:}}
+\algnewcommand\algorithmicoutput{{\bfseries 出力:}}
+\algnewcommand\algorithmiccontent{{\bfseries アルゴリズム:}}
+\algnewcommand\AlgInput{\item[\algorithmicinput]}
+\algnewcommand\AlgOutput{\item[\algorithmicoutput]}
+\algnewcommand\AlgContent{\item[\algorithmiccontent]}
+
+% ============================================================
+% Listings
+% Old jlisting/plistings dependency has been removed.
+% ============================================================
+
+\RequirePackage{listings}
+\RequirePackage{fancyvrb}
+
+\renewcommand{\lstlistingname}{Code}
+
+\captionsetup[lstlisting]{
+  format=plain,
+  justification=raggedright,
+  singlelinecheck=false,
+  font=normalsize,
+  labelfont={normalsize,bf},
+  textfont={normalsize,bf},
+  labelsep=colon,
+  skip=5pt
+}
+\captionsetup[algorithm]{
+  format=plain,
+  justification=raggedright,
+  singlelinecheck=false,
+  font=normalsize,
+  labelfont={normalsize,bf},
+  textfont={normalsize,normalfont},
+  labelsep=colon,
+  skip=5pt
+}
+
+\lstdefinelanguage{mypython}{
+  sensitive=true,
+  morekeywords=[1]{
+    and,as,assert,async,await,
+    break,class,continue,def,del,
+    elif,else,except,False,finally,
+    for,from,global,if,import,in,
+    is,lambda,None,nonlocal,not,
+    or,pass,raise,return,True,
+    try,while,with,yield
+  },
+  morekeywords=[2]{
+    print,len,range,input,
+    str,int,float,list,dict,set,tuple,
+    open,type,isinstance,
+    enumerate,zip,map,filter,
+    sum,min,max,abs,round,
+    all,any,sorted,reversed
+  },
+  morekeywords=[3]{f,fr,rf},
+  keywordstyle=[1]\color{blue}\bfseries,
+  keywordstyle=[2]\color{teal},
+  keywordstyle=[3]\color{red!50!black},
+  morecomment=[l]\#,
+  commentstyle=\color{green!50!black},
+  morestring=[b]",
+  morestring=[b]',
+  stringstyle=\ttfamily\color{red!70!black},
+  basicstyle=\ttfamily\small,
+  columns=fullflexible,
+  keepspaces=true,
+  upquote=true,
+  showstringspaces=false
+}
+
+\lstset{
+  language=mypython,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{green!50!black},
+  stringstyle=\ttfamily\color{red!50!black},
+  numbers=left,
+  numberstyle=\ttfamily\footnotesize\color{gray},
+  stepnumber=1,
+  numbersep=10pt,
+  backgroundcolor=\color{white},
+  showstringspaces=false,
+  breaklines=true,
+  breakindent=15pt,
+  frame=tb,
+  float=false,
+  rulecolor=\color{black},
+  xleftmargin=25pt,
+  framexleftmargin=25pt,
+  columns=fullflexible,
+  keepspaces=true,
+  upquote=true,
+  aboveskip=7.5pt,
+  captionpos=t,
+  breakatwhitespace=true
+}
+
+\lstnewenvironment{code}[1][]
+{%
+  \lstset{
+    language=mypython,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!50!black},
+    stringstyle=\ttfamily\color{red!50!black},
+    numbers=left,
+    numberstyle=\ttfamily\footnotesize\color{gray},
+    stepnumber=1,
+    numbersep=10pt,
+    frame=none,
+    float=false,
+    xleftmargin=25pt,
+    framexleftmargin=25pt,
+    columns=fullflexible,
+    keepspaces=true,
+    upquote=true,
+    breaklines=true,
+    breakindent=15pt,
+    aboveskip=0pt,
+    belowskip=0pt,
+    showstringspaces=false,
+    captionpos=t,
+    breakatwhitespace=true,
+    #1
+  }%
+}
+{}
+
+\lstnewenvironment{codeoutput}[1][]
+{%
+  \lstset{
+    language={},
+    numbers=none,
+    frame=none,
+    backgroundcolor=\color{gray!10},
+    basicstyle=\ttfamily\fontsize{9}{14}\selectfont,
+    xleftmargin=20pt,
+    framexleftmargin=20pt,
+    columns=flexible,
+    framesep=0pt,
+    keepspaces=true,
+    breaklines=true,
+    breakindent=15pt,
+    upquote=true,
+    breakatwhitespace=true,
+    #1
+  }%
+}
+{}
+
+\makeatletter
+\AtBeginDocument{%
+  \renewcommand{\thelstlisting}{\thechapter.\arabic{lstlisting}}
+  \let\c@algorithm\c@lstlisting
+  \let\thealgorithm\thelstlisting
+  \renewcommand{\ALG@name}{Algorithm}
+}
+\makeatother
+
+% ============================================================
+% tcolorbox environments
+% ============================================================
+
+\newtcolorbox{infobox}[1]{
+  enhanced jigsaw,
+  breakable,
+  colback=white,
+  fonttitle=\sffamily,
+  title={#1}
+}
+
+\newtcbtheorem[number within=chapter]{defbox}{定義}{
+  enhanced jigsaw,
+  breakable,
+  colback=white,
+  fonttitle=\sffamily
+}{}
+
+\newtcolorbox{cbox}[1][]{
+  enhanced jigsaw,
+  breakable,
+  colback=white,
+  top=2pt,
+  bottom=2pt,
+  #1
+}
+
+\newtcolorbox[
+  auto counter,
+  number within=chapter
+]{rcbox}[2]{
+  enhanced jigsaw,
+  breakable,
+  colback=white,
+  top=2pt,
+  bottom=2pt,
+  fonttitle=\sffamily,
+  title={Code \thetcbcounter: #1},
+  label={#2}
+}
+
+\tcbset{
+  itemstyle/.style={
+    enhanced,
+    drop fuzzy shadow,
+    colframe=black,
+    coltitle=white,
+    colbacktitle=black!75,
+    fonttitle=\sffamily
+  }
+}
+
+% ============================================================
+% Footnotes
+% ============================================================
+
+\setlength{\skip\footins}{5pt}
+\setlength{\footnotesep}{0.5\baselineskip}
+
+% Temporary simple implementation for LuaLaTeX migration.
+% Translation notes currently use ordinary footnotes.
+\newcommand{\trans}[1]{%
+  \footnote{%
+    \begingroup
+    \parindent=0pt
+    \raggedright
+    #1%
+    \endgroup
+  }%
+}
+
+\interfootnotelinepenalty=100000000
+
+% ============================================================
+% Page layout / spacing
+% ============================================================
+
+\setlength\floatsep{1em}
+\setlength\textfloatsep{1em}
+\setlength\intextsep{1em}
+
+\renewcommand{\arraystretch}{1.375}
+\renewcommand{\baselinestretch}{0.9}
+\setlength{\arraycolsep}{3pt}
+
+% Original pLaTeX-specific \narrowbaselines hook was removed.
+
+% ============================================================
+% Frequently used macros
+% ============================================================
+
+\newcommand{\circled}[1]{\raise0.2ex\hbox{\textcircled{\scriptsize #1}}}
+
+\newcommand{\diff}{\mathrm{d}}
+\newcommand{\erf}{\mathrm{erf}}
+\newcommand{\gas}{\left(\mathrm{g}\right)}
+\newcommand{\liquid}{\left(\mathrm{l}\right)}
+\newcommand{\solid}{\left(\mathrm{s}\right)}
+\newcommand{\aqua}{\left(\mathrm{aq}\right)}
+\newcommand{\alcohol}{\left(\mathrm{alc}\right)}
+
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+
+\newcommand{\noudo}[1]{\left[\hspace{0.1em}\ce{#1}\hspace{0.1em}\right]}
+\newcommand{\heikaku}[1]{\left[\hspace{0.1em}\ce{#1}\hspace{0.1em}\right]}
+\newcommand{\hukuso}[1]{{#1}^{*}}
+\newcommand{\transmatrix}[1]{\left(#1\right)^{\top}}
+
+\DeclareMathOperator{\Dom}{Dom}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\sig}{sig}
+\DeclareMathOperator{\sigmoid}{sigmoid}
+\DeclareMathOperator{\relu}{ReLU}
+\DeclareMathOperator{\softmax}{softmax}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\sign}{sign}
+
+\newcommand{\activationfunc}{\mathrm{a}}
+\newcommand{\entropyfunc}{\mathrm{H}}
+\newcommand{\expectation}{\mathrm{E}}
+\newcommand{\divergence}{\mathrm{D}}
+\newcommand{\KL}{\mathrm{KL}}
+\newcommand{\vectorization}{\mathrm{vec}}
+\newcommand{\concat}{\mathrm{concat}}
+\newcommand{\nnlm}{\mathrm{nnlm}}
+\newcommand{\enc}{\mathrm{enc}}
+\newcommand{\encAMR}{\mathrm{encAMR}}
+\newcommand{\RNN}{\mathrm{RNN}}
+\newcommand{\LSTM}{\mathrm{LSTM}}
+\newcommand{\GRU}{\mathrm{GRU}}
+
+\renewcommand{\Pr}[1]{\mathrm{Pr}\left(#1\right)}
+\newcommand{\Cov}[1]{\mathrm{Cov}\left[#1\right]}
+\newcommand{\sampleCov}[1]{\widehat{\mathrm{Cov}}\left[#1\right]}
+
+\newcommand{\binomial}[1]{\mathrm{Bi}\left(#1\right)}
+\newcommand{\hypergeometric}[1]{\mathrm{HG}\left(#1\right)}
+\newcommand{\poisson}[1]{\mathrm{Po}\left(#1\right)}
+\newcommand{\nbinomial}[1]{\mathrm{NB}\left(#1\right)}
+\newcommand{\geometric}[1]{\mathrm{Ge}\left(#1\right)}
+\newcommand{\gammad}[1]{\mathrm{Ga}\left(#1\right)}
+\newcommand{\Exp}[1]{\mathrm{Exp}\left(#1\right)}
+\newcommand{\betad}[1]{\mathrm{Be}\left(#1\right)}
+\newcommand{\cauchy}[1]{\mathrm{Ca}\left(#1\right)}
+\newcommand{\laplace}[1]{\mathrm{La}\left(#1\right)}
+\newcommand{\multinomial}[1]{\mathrm{Mult}\left(#1\right)}
+\newcommand{\dirichlet}[1]{\mathrm{Dir}\left(#1\right)}
+
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\pH}{\mathrm{pH}}
+
+\let\olddfrac\dfrac
+\renewcommand{\dfrac}[2]{\olddfrac{\,#1\,}{\,#2\,}}
+
+\let\oldmid\mid
+\renewcommand{\mid}{\!\oldmid\!}
+
+\newcommand{\relmiddle}[1]{\mathrel{}\!\middle#1\!\mathrel{}}
+\newcommand{\oldrelmiddle}[1]{\mathrel{}\middle#1\mathrel{}}
+
+\let\oldparallel\parallel
+\renewcommand{\parallel}{\!\oldparallel\!}
+
+\newcommand{\paren}[1]{\mleft(#1\mright)}
+\newcommand{\bracket}[1]{\left[#1\right]}
+\newcommand{\curly}[1]{\left\{#1\right\}}
+
+\newcommand{\combination}[2]{\textrm{}_{#1}\textrm{C}_{#2}}
+\newcommand{\kou}[3]{\mbox{}^{#1}\textrm{#2}_{#3}}
+\newcommand{\koum}[4]{\mbox{}^{#1}{{#2}_{\textrm{#3}}}^{#4}}
+
+\setlist[enumerate]{topsep=0.25em,itemsep=0.25em}
+\setlist[itemize]{topsep=0.25em,itemsep=0.25em}
+
+\renewcommand{\thesubsubsection}{(\alph{subsubsection})}
+\renewcommand{\thefootnote}{*\arabic{footnote}}
+\setlength{\parindent}{0pt}
+
+% ============================================================
+% Title page
+% ============================================================
+
+\makeatletter
+\def\subtitle#1{\def\@subtitle{#1}}
+\providecommand{\@subtitle}{}
+
+\renewcommand{\maketitle}{%
+  \begin{titlepage}%
+    \let\footnotesize\small
+    \let\footnoterule\relax
+    \parindent\z@
+    \null
+    \vskip 60\p@
+    \begin{tcolorbox}[
+      enhanced,
+      drop fuzzy shadow,
+      interior style={right color=blue!50!cyan,left color=blue},
+      coltext=white,
+      boxrule=0pt,
+      top=10pt,
+      bottom=10pt,
+      left=8pt,
+      right=8pt
+    ]
+      \centering
+      {\Large\sffamily \@subtitle\par}
+      \vspace{4pt}
+      {\LARGE\sffamily \@title\par}
+    \end{tcolorbox}
+    \vskip 20\p@
+    \begin{center}
+      {\Large \@date\par}
+      \vskip 15\p@
+      {\Large \@author\par}
+    \end{center}
+    \vfil
+    \null
+  \end{titlepage}%
+  \setcounter{footnote}{0}%
+}
+\makeatother
+
+% ============================================================
+% Numbering / headings
+% ============================================================
+
+\renewcommand{\thefigure}{\textrm{\thechapter.\arabic{figure}}}
+\renewcommand{\thetable}{\textrm{\thechapter.\arabic{table}}}
+
+\makeatletter
+\@addtoreset{section}{chapter}
+\@addtoreset{subsection}{section}
+\makeatother
+
+\renewcommand{\thepart}{\arabic{part}}
+\setcounter{tocdepth}{2}
+
+% Original jsbook-only \jsParagraphMark customization was removed.
+
+\newcommand{\kasen}[1]{\uline{#1}}
+
+\newcommand{\threespace}{\,\,\,}
+\newcommand{\emspace}{\mbox{　}}
+
+\setlength{\fboxrule}{0.75pt}
+
+\let\oldboxed\boxed
+\renewcommand{\boxed}[1]{\oldboxed{\,#1\,}}
+
+\newcommand{\frbox}[1]{\raisebox{-0.15em}{\framebox(3em,1em)[c]{#1}}}
+\newcommand{\questionframe}[1]{%
+  \,\setlength{\fboxsep}{0.05em}\fbox{　\raisebox{0em}[0.8em][0.1em]{\textbf{#1}}　}\,%
+}
+\newcommand{\choosingframe}[2]{%
+  \,\setlength{\fboxsep}{0.1em}\fbox{\threespace\raisebox{0em}[1.6em][1em]{\textbf{#1}\threespace #2}}\,%
+}
+\newcommand{\answerframeA}[2]{%
+  \,\setlength{\fboxsep}{0.3em}\fbox{\,\raisebox{0em}[0.75em][0.075em]{\textbf{#1}\,\,\,#2}\,}\,%
+}
+\newcommand{\answerframeB}[1]{%
+  \,\setlength{\fboxsep}{0.3em}\fbox{\,\raisebox{0em}[0.75em][0.075em]{#1}\,}\,%
+}
+\newcommand{\answerframeAm}[2]{\,\setlength{\fboxsep}{0.3em}\fbox{\,\textbf{#1}\,\,\,#2\,}\,}
+\newcommand{\answerframeBm}[1]{\,\setlength{\fboxsep}{0.3em}\fbox{\,#1\,}\,}
+\newcommand{\answercolumn}[1]{\,\fbox{\,#1\,}\,}
+\newcommand{\ffbox}[1]{\setlength{\fboxsep}{0.1em}\fbox{\,\raisebox{0em}[0.75em][0.075em]{#1}\,}}
+\newcommand{\ffboxb}[1]{\setlength{\fboxsep}{0.25em}\fbox{\,\raisebox{0em}[0.875em][0.25em]{#1}\,}}
+\newcommand{\mathanswerframeA}[2]{\,\boxed{\textbf{#1}\threespace #2}\,}
+\newcommand{\mathanswerframeB}[1]{\,\boxed{#1}\,}
+\newcommand{\matrixframe}[1]{\setlength{\fboxsep}{0.375em}\boxed{#1}}
+
+\newcommand{\spacesi}[1]{\,\si{#1}}
+
+\renewcommand{\chaptermark}[1]{%
+  \markboth{第\ \normalfont\thechapter\ 章.\ ~#1}{}%
+}
+
+% ============================================================
+% Local equation numbering environment
+% ============================================================
+
+\newcounter{ENVeqcntsave}
+\newenvironment{countreset}
+{%
+  \setcounter{ENVeqcntsave}{\value{equation}}%
+  \setcounter{equation}{0}%
+  \renewcommand{\theequation}{\Alph{equation}}%
+}
+{%
+  \setcounter{equation}{\value{ENVeqcntsave}}%
+}
+
+% ============================================================
+% Theorem environments
+% ============================================================
+
+\newtheoremstyle{mystyle}
+  {}{}{}{}{\bfseries}{}{ }
+  {\textbf{\thmnote{#3}}　}
+\theoremstyle{mystyle}
+\newtheorem{rules}{法則}[chapter]
+
+\newtheoremstyle{mystyle2}
+  {}{}{}{}{\bfseries}{}{ }
+  {\thmname{#1}\thmnumber{#2}.\ (\textbf{\thmnote{#3}}) }
+\theoremstyle{mystyle2}
+\newtheorem{question}{問題}[chapter]
+\newtheorem{theorem}{定理}[chapter]
+
+\newtheoremstyle{mystyle3}
+  {}{}{}{}{\bfseries}{}{ }
+  {(\thmname{#1})\,}
+\theoremstyle{mystyle3}
+\newtheorem{kaihou}{解法}[chapter]
+\newtheorem{kaitou}{解答}[chapter]
+
+\newtheoremstyle{mystyle4}
+  {}{}{}{}{\bfseries}{}{ }
+  {\thmname{#1}\thmnumber{#2}.\,(\textbf{\thmnote{#3}})\,}
+\theoremstyle{mystyle4}
+\newtheorem{definition}{定義}[chapter]
+\newtheorem{reference}{参考}[chapter]
+
+\newtheoremstyle{mystyle5}
+  {}{}{}{}{\bfseries}{}{ }
+  {\thmname{#1}. }
+\theoremstyle{mystyle5}
+\newtheorem{hosoku}{補足}[chapter]
+\newtheorem{column}{コラム}[chapter]
+
+\newtheoremstyle{mystyle6}
+  {}{}{\small}{}{\sffamily}{}{ }
+  {\thmname{#1}\,\thmnumber{#2}. }
+\theoremstyle{mystyle6}
+\newtheorem{memo}{Memo}[chapter]
+
+\newtheoremstyle{mystyle7}
+  {}{}{\small}{}{\bfseries}{}{ }
+  {\thmname{#1}\thmnumber{#2}. }
+\theoremstyle{mystyle7}
+\newtheorem{Konkyo}{根拠}[chapter]
+\newtheorem{Dougubako}{道具箱}[chapter]
+\newtheorem{Gutairei}{具体例}[chapter]
+\newtheorem{Reidai}{例題}[chapter]
+\newtheorem{Jishuumondai}{自習問題}[chapter]
+
+\newenvironment{hutoji}{\bfseries}{}
+\newcommand{\head}[1]{%
+  \newenvironment{#1}
+    {\begin{quote}\begin{hutoji}}
+    {\end{hutoji}\end{quote}}%
+}
+\head{keypoint}
+
+\newtheoremstyle{mystyle8}
+  {}{}{}{}{\bfseries}{}{ }
+  {\textbf{\thmnote{#3}}\,}
+\theoremstyle{mystyle8}
+\newtheorem{groupcontent}{}[chapter]
+
+\newcommand{\countrev}[2]{%
+  \newenvironment{#1}
+    {\begin{countreset}\begin{#2}}
+    {\end{#2}\end{countreset}}%
+}
+\countrev{konkyo}{Konkyo}
+\countrev{dougubako}{Dougubako}
+\countrev{gutairei}{Gutairei}
+\countrev{reidai}{Reidai}
+\countrev{jishuumondai}{Jishuumondai}
+
+% ============================================================
+% Defaults
+% ============================================================
+
+\author{坪井 一馬}
+\date{\today}
+
+\endinput

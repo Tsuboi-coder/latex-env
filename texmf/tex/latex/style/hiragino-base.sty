@@ -1,0 +1,31 @@
+\ProvidesPackage{hiragino-base}[2026/09/04 Hiragino font preset for documents]
+
+\RequirePackage{luatexja-fontspec}
+
+% --------------------------------------------------
+% Font directory mounted from macOS
+% --------------------------------------------------
+\newcommand{\HiraginoFontPath}{/host-fonts/system/}
+
+% --------------------------------------------------
+% Japanese fonts
+% --------------------------------------------------
+
+% Main Japanese text: Hiragino Mincho ProN
+\setmainjfont[
+  Path = \HiraginoFontPath
+]{ヒラギノ明朝 ProN.ttc}
+
+% Japanese sans-serif: Hiragino Kaku Gothic W6
+\setsansjfont[
+  Path = \HiraginoFontPath
+]{ヒラギノ角ゴシック W6.ttc}
+
+% --------------------------------------------------
+% Latin fonts
+% --------------------------------------------------
+
+% Sans-serif Latin text: Helvetica Neue
+\setsansfont[
+  Path = \HiraginoFontPath
+]{HelveticaNeue.ttc}

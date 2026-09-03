@@ -6,9 +6,10 @@
 
 1. Git、Docker、必要に応じて Visual Studio Code をインストールする
 2. リポジトリをクローンし、Docker イメージをビルドする
-3. Docker 内の LaTeX と共有 `texmf` を確認する
-4. `basic_1.tex` から `basic_3.tex` までをコンパイルする
-5. Visual Studio Code を使用する場合は LaTeX Workshop を設定する
+3. macOS では、必要に応じてシステムフォントを Docker と共有する
+4. Docker 内の LaTeX と共有 `texmf` を確認する
+5. テスト文書をコンパイルする
+6. Visual Studio Code を使用する場合は LaTeX Workshop を設定する
 
 すべての動作確認が成功すれば、ホスト側に MacTeX や TeX Live を導入せずに執筆環境を利用できます。
 
@@ -97,19 +98,21 @@ docker run --rm \
 /root/texmf/tex/latex/style/teststyle.sty
 ```
 
-最後に、LuaLaTeX を使って3つのテスト文書をコンパイルします。`basic_3.tex` では `minted` が外部プログラムの Pygments を実行するため、`-shell-escape` が必要です。
+最後に、LuaLaTeX を使って基本機能を段階的に確認する3つのテスト文書をコンパイルします。`3_minted_python.tex` では `minted` が外部プログラムの Pygments を実行するため、`-shell-escape` が必要です。
 
 ```shell
-./scripts/latexmk-docker -lualatex test/basic_1.tex
-./scripts/latexmk-docker -lualatex test/basic_2.tex
-./scripts/latexmk-docker -lualatex -shell-escape test/basic_3.tex
+cd test
+../scripts/latexmk-docker -lualatex 1_lualatex_basic.tex
+../scripts/latexmk-docker -lualatex 2_shared_style_math.tex
+../scripts/latexmk-docker -lualatex -shell-escape 3_minted_python.tex
+cd ..
 ```
 
 次の PDF が生成または更新されれば、セットアップは完了です。
 
-- `test/basic_1.pdf`: LuaLaTeX による日本語・英語の基本テスト
-- `test/basic_2.pdf`: `texmf` 内の独自スタイルと数式・化学式のテスト
-- `test/basic_3.pdf`: `minted`、Python、Pygments、および `shell-escape` のテスト
+- `test/1_lualatex_basic.pdf`: LuaLaTeX による日本語・英語の基本組版
+- `test/2_shared_style_math.pdf`: 共有 `texmf` のスタイル読み込み、数式、化学式
+- `test/3_minted_python.pdf`: `minted`、Python、Pygments、`shell-escape`
 
 ここまで成功すれば、TeX Live、LuaLaTeX、独自スタイル、Python、Pygments、および `minted` が Docker 内で利用できています。
 
@@ -203,9 +206,9 @@ docker build --pull -t kazuma-latex:2026 .
 
 ## フォントについて
 
-Hiragino フォントは現在の Docker イメージには含まれていません。また、フォントファイルはライセンス上の理由から、このリポジトリへのコミットや Docker イメージへのコピーを行いません。
+macOS のヒラギノと Helvetica Neue を利用する設定に対応しています。フォントファイルはライセンスと環境依存性を考慮し、このリポジトリへのコミットや Docker イメージへのコピーを行いません。ホストの `/System/Library/Fonts` をコンテナへ読み取り専用でマウントします。
 
-将来 Hiragino が必要になった場合は、macOS にインストールされているフォントをコンテナへ読み取り専用でマウントする方法を検討します。現時点では未対応です。
+新しい Mac では Docker Desktop の共有設定、実際のフォントファイル名、および専用テスト文書を確認する必要があります。詳しい手順、スタイルの使い分け、管理範囲、トラブルシューティングは [macOS のヒラギノフォントを Docker から利用する](hiragino-fonts.md) を参照してください。
 
 ## トラブルシューティング
 
@@ -242,7 +245,7 @@ docker run --rm \
 ./scripts/latexmk-docker -lualatex -shell-escape path/to/document.tex
 ```
 
-それでも失敗する場合は、`basic_3.tex` をコンパイルし、Docker イメージ内の Python・Pygments を含む共通環境に問題がないか切り分けてください。
+それでも失敗する場合は、`test/3_minted_python.tex` をコンパイルし、Docker イメージ内の Python・Pygments を含む共通環境に問題がないか切り分けてください。
 
 ### Linux で生成物の所有者が root になる
 
@@ -251,6 +254,7 @@ docker run --rm \
 ## 現在の注意事項
 
 - Docker イメージ名とタグ `kazuma-latex:2026` は、`scripts/latexmk-docker` とビルドコマンドで一致させる必要があります。
+- `scripts/latexmk-docker` は macOS の `/System/Library/Fonts` をマウントするため、現状のスクリプトは macOS 固有です。
 - `texlive/texlive:latest` を使用しているため、異なる時期にビルドすると TeX Live の内容が変わる可能性があります。
 - 環境が安定した段階で、Dockerfile の TeX Live イメージを固定タグへ変更し、リポジトリにもバージョンタグを付けると再現性を高められます。
 - 補助スクリプトは Bash を使用するため、Windows では WSL などの Bash 環境が必要です。

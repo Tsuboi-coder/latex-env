@@ -8,6 +8,7 @@ LATEX_ENV_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 docker run --rm \
     -v "$(pwd):/work" \
     -v "$LATEX_ENV_DIR/texmf:/root/texmf:ro" \
+    -v "/System/Library/Fonts:/host-fonts/system:ro" \
     -w /work \
     kazuma-latex:2026 \
     latexmk "$@"

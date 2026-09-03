@@ -1,0 +1,19 @@
+\ProvidesPackage{hiragino-slides}[2026/09/04 Hiragino font preset for Beamer slides]
+
+\RequirePackage{luatexja-fontspec}
+
+\newcommand{\HiraginoFontPath}{/host-fonts/system/}
+
+% Japanese text
+\setsansjfont[
+  Path = \HiraginoFontPath,
+  BoldFont = {ヒラギノ角ゴシック W6.ttc}
+]{ヒラギノ丸ゴ ProN W4.ttc}
+
+% Latin text
+\setsansfont[
+  Path = \HiraginoFontPath
+]{HelveticaNeue.ttc}
+
+% Beamer: use serif fonts only for mathematics
+\usefonttheme[onlymath]{serif}
