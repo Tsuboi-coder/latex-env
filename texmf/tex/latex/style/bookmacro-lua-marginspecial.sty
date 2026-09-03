@@ -16,10 +16,15 @@
 \RequirePackage{subfiles}
 \RequirePackage{etoolbox}
 
-\geometry{twoside,inner=25mm,outer=32.5mm,top=30mm,bottom=30mm}
-% Standard layout: keep ltjsbook's running-head width equal to the text block.
-% geometry recalculates \textwidth but does not update ltjsbook's \fullwidth.
-\setlength{\fullwidth}{\textwidth}
+\geometry{twoside,inner=20mm,outer=45mm,top=35mm,bottom=35mm}
+
+% Keep the running head at the same physical position on every page:
+% 20 mm from both paper edges.  The text block remains 145 mm wide and is
+% shifted horizontally by the twoside inner/outer margins on alternate pages.
+% ltjsbook's headings page style already compensates for that shift when
+% \fullwidth - \textwidth equals the 25 mm odd/even shift.
+\setlength{\fullwidth}{\paperwidth}
+\addtolength{\fullwidth}{-40mm}
 
 % ============================================================
 % Drawing / graphics
@@ -95,13 +100,13 @@
   margin=2em,
   aboveskip=0.75em,
   belowskip=-0.5em,
-  font={small,stretch=0.9}
+  font={small,stretch=1}
 }
 \captionsetup[table]{
   margin=2em,
   aboveskip=0.125em,
   belowskip=-0.25em,
-  font={small,stretch=0.9}
+  font={small,stretch=1}
 }
 
 % ============================================================
@@ -356,7 +361,7 @@
 \setlength\intextsep{1em}
 
 \renewcommand{\arraystretch}{1.375}
-\renewcommand{\baselinestretch}{0.9}
+\renewcommand{\baselinestretch}{1}
 \setlength{\arraycolsep}{3pt}
 
 % Original pLaTeX-specific \narrowbaselines hook was removed.
