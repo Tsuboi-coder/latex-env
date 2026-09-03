@@ -5,6 +5,11 @@
 % Base / layout
 % ============================================================
 
+% フォントサイズ等に関する警告を出さない
+\RequirePackage{silence}
+  \WarningFilter{latexfont}{Font shape}
+  \WarningFilter{latexfont}{Size substitutions}
+
 \RequirePackage{geometry}
 \RequirePackage{graphicx}
 \RequirePackage{fancyhdr}
