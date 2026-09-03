@@ -16,7 +16,15 @@
 \RequirePackage{subfiles}
 \RequirePackage{etoolbox}
 
-\geometry{twoside,inner=25mm,outer=35mm,top=30mm,bottom=30mm}
+\geometry{twoside,inner=25mm,outer=40mm,top=30mm,bottom=30mm}
+
+% Keep the running head at the same physical position on every page:
+% 25 mm from both paper edges.  The text block remains 145 mm wide and is
+% shifted horizontally by the twoside inner/outer margins on alternate pages.
+% ltjsbook's headings page style already compensates for that shift when
+% \fullwidth is wider than \textwidth.
+\setlength{\fullwidth}{\paperwidth}
+\addtolength{\fullwidth}{-50mm}
 
 % ============================================================
 % Drawing / graphics
