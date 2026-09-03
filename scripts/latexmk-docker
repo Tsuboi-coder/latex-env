@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+LATEX_ENV_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+docker run --rm \
+    -v "$(pwd):/work" \
+    -v "$LATEX_ENV_DIR/texmf:/root/texmf:ro" \
+    -w /work \
+    kazuma-latex:2026 \
+    latexmk "$@"
