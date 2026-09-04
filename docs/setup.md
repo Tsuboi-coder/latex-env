@@ -74,6 +74,10 @@ chmod +x scripts/latexmk-docker
 > [!NOTE]
 > 補助スクリプトは、実行時のカレントディレクトリをコンテナの `/work` に割り当てます。通常はリポジトリのルートディレクトリから実行してください。
 
+補助スクリプトは macOS、Linux、および WSL に対応しています。macOS では `/System/Library/Fonts` が存在するときだけシステムフォントをコンテナへ共有します。Linux と WSL ではこのマウントを省略し、コンテナに収録されたフォントを使用します。共有 `texmf` のマウント先や macOS 上の動作は従来どおりです。
+
+Windows では、Docker Desktop の WSL 2 バックエンドを有効にし、WSL のシェルから実行してください。速度とファイル監視の安定性のため、リポジトリは `/mnt/c/...` ではなく WSL 側のホームディレクトリ（例: `~/latex-env`）へ配置することを推奨します。
+
 ## 4. 動作確認
 
 まず、LuaLaTeX と latexmk が Docker イメージ内で実行できることを確認します。これらを `docker run` 経由で呼び出すことで、ホスト側の TeX 環境を誤って使用していないことも確認できます。
@@ -247,14 +251,14 @@ docker run --rm \
 
 それでも失敗する場合は、`test/3_minted_python.tex` をコンパイルし、Docker イメージ内の Python・Pygments を含む共通環境に問題がないか切り分けてください。
 
-### Linux で生成物の所有者が root になる
+### Linux / WSL で生成物の所有者が root になる
 
-現在の補助スクリプトはコンテナの既定ユーザーで処理を実行します。そのため、Linux では生成ファイルが root 所有になることがあります。必要に応じて、Docker の `--user` オプションでホスト側のユーザー ID とグループ ID を渡す運用を検討してください。
+補助スクリプトはコンテナの既定ユーザーで処理を実行します。そのため、Linux / WSL では生成ファイルが root 所有になることがあります。LuaLaTeX のフォントキャッシュも書き込み可能に保つ必要があるため、単純に Docker の `--user` オプションを追加するだけでは動作しません。必要な場合は、生成先と TeX のキャッシュディレクトリの両方を非 root ユーザーが書き込める構成にしてください。
 
 ## 現在の注意事項
 
 - Docker イメージ名とタグ `kazuma-latex:2026` は、`scripts/latexmk-docker` とビルドコマンドで一致させる必要があります。
-- `scripts/latexmk-docker` は macOS の `/System/Library/Fonts` をマウントするため、現状のスクリプトは macOS 固有です。
+- ヒラギノ専用の `hiragino-base` と `hiragino-slides` は macOS 固有です。Linux / WSL では、これらを読み込まない文書と、代替フォントを備えたスタイルを利用してください。
 - `texlive/texlive:latest` を使用しているため、異なる時期にビルドすると TeX Live の内容が変わる可能性があります。
 - 環境が安定した段階で、Dockerfile の TeX Live イメージを固定タグへ変更し、リポジトリにもバージョンタグを付けると再現性を高められます。
 - 補助スクリプトは Bash を使用するため、Windows では WSL などの Bash 環境が必要です。

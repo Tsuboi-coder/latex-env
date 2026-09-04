@@ -5,10 +5,21 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 LATEX_ENV_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-docker run --rm \
-    -v "$(pwd):/work" \
-    -v "$LATEX_ENV_DIR/texmf:/root/texmf:ro" \
-    -v "/System/Library/Fonts:/host-fonts/system:ro" \
-    -w /work \
+DOCKER_ARGS=(
+    --rm
+    -v "$(pwd):/work"
+    -v "$LATEX_ENV_DIR/texmf:/root/texmf:ro"
+    -w /work
+)
+
+# macOS のシステムフォントは、実在するホストでだけ共有する。
+# Linux / WSL ではこのマウントを省き、TeX Live 収録フォントを使用する。
+if [ -d "/System/Library/Fonts" ]; then
+    DOCKER_ARGS+=(
+        -v "/System/Library/Fonts:/host-fonts/system:ro"
+    )
+fi
+
+docker run "${DOCKER_ARGS[@]}" \
     kazuma-latex:2026 \
     latexmk "$@"

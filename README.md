@@ -15,3 +15,7 @@ Docker 上の TeX Live / LuaLaTeX と、リポジトリで共有する `texmf` �
 | `5_hiragino_beamer.tex` | Beamer 用ヒラギノプリセット、太字、数式 |
 
 基本環境の確認方法は [docs/setup.md](docs/setup.md#4-動作確認)、macOS フォントの準備と確認方法は [docs/hiragino-fonts.md](docs/hiragino-fonts.md) に記載しています。
+
+## ライセンス
+
+このプロジェクトは [MIT License](LICENSE) のもとで公開しています。

@@ -439,7 +439,8 @@
 \let\oldmid\mid
 \renewcommand{\mid}{\!\oldmid\!}
 
-\newcommand{\relmiddle}[1]{\mathrel{}\!\middle#1\!\mathrel{}}
+% \newcommand{\relmiddle}[1]{\mathrel{}\,\middle#1\,\mathrel{}}
+\newcommand{\relmiddle}[1]{\,\middle#1\,}
 \newcommand{\oldrelmiddle}[1]{\mathrel{}\middle#1\mathrel{}}
 
 \let\oldparallel\parallel
