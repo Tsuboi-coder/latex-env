@@ -10,6 +10,11 @@
   BoldFont = {ヒラギノ角ゴシック W6.ttc}
 ]{ヒラギノ丸ゴ ProN W4.ttc}
 
+% LuaTeX-ja keeps the Japanese default family as mincho even though Beamer's
+% Latin default is sans serif.  Select the Japanese sans family explicitly so
+% the font configured above is actually used in frame text and headings.
+\renewcommand{\kanjifamilydefault}{\gtdefault}
+
 % Latin text
 \setsansfont[
   Path = \HiraginoFontPath
