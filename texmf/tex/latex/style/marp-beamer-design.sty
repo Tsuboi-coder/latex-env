@@ -1,13 +1,6 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{marp-beamer-design-flow}[2026/09/05 Native Beamer frames for marp-beamer-design]
+\ProvidesPackage{marp-beamer-design}[2026/09/05 High-fidelity Marp-to-Beamer reproduction]
 
-% フォントサイズ等に関する警告を出さない
-\RequirePackage{silence}
-  \WarningFilter{latexfont}{Font shape}
-  \WarningFilter{latexfont}{Size substitutions}
-
-% Self-contained copy of the precise fixed-coordinate design.
-% Keep this package independent: it must work without marp-beamer-design.sty.
 \RequirePackage{iftex}
 \ifLuaTeX\else
   \PackageError{marp-beamer-design}{Compile with LuaLaTeX}{This theme uses luatexja-fontspec.}
@@ -54,10 +47,7 @@
 % On macOS those exact fonts are selected.  Linux fallbacks are only for preview.
 % Scale=1 is deliberate: luatexja otherwise scales CJK glyphs relative to Latin.
 % -----------------------------------------------------------------------------
-\IfFileExists{/host-fonts/system/HelveticaNeue.ttc}{
-  \newfontfamily\SlideBodyLatinFont{HelveticaNeue.ttc}[Path=/host-fonts/system/,Scale=1]
-  \newfontfamily\SlideBodyLatinBoldFont{HelveticaNeue.ttc}[Path=/host-fonts/system/,Scale=1]
-}{\IfFontExistsTF{Helvetica}{
+\IfFontExistsTF{Helvetica}{
   \newfontfamily\SlideBodyLatinFont{Helvetica}[Scale=1]
   \newfontfamily\SlideBodyLatinBoldFont{Helvetica}[Scale=1,BoldFont=Helvetica Bold]
 }{
@@ -68,12 +58,9 @@
     \newfontfamily\SlideBodyLatinFont{TeX Gyre Heros}[Scale=1]
     \newfontfamily\SlideBodyLatinBoldFont{TeX Gyre Heros}[Scale=1,BoldFont=TeX Gyre Heros Bold]
   }
-}}
+}
 
-\IfFileExists{/host-fonts/system/ヒラギノ丸ゴ ProN W4.ttc}{
-  \newjfontfamily\SlideBodyJPFont{ヒラギノ丸ゴ ProN W4.ttc}[
-    Path=/host-fonts/system/,Scale=1,BoldFont={ヒラギノ角ゴシック W6.ttc}]
-}{\IfFontExistsTF{HiraMaruProN-W4}{
+\IfFontExistsTF{HiraMaruProN-W4}{
   \IfFontExistsTF{HiraKakuProN-W6}{
     \newjfontfamily\SlideBodyJPFont{HiraMaruProN-W4}[Scale=1,BoldFont={HiraKakuProN-W6}]
   }{
@@ -85,12 +72,9 @@
   }{
     \newjfontfamily\SlideBodyJPFont{Noto Sans CJK JP}[Scale=1]
   }
-}}
+}
 
-\IfFileExists{/host-fonts/system/ヒラギノ角ゴシック W6.ttc}{
-  \newfontfamily\SlideTitleLatinFont{ヒラギノ角ゴシック W6.ttc}[Path=/host-fonts/system/,Scale=1]
-  \newjfontfamily\SlideTitleJPFont{ヒラギノ角ゴシック W6.ttc}[Path=/host-fonts/system/,Scale=1]
-}{\IfFontExistsTF{HiraKakuProN-W6}{
+\IfFontExistsTF{HiraKakuProN-W6}{
   \newfontfamily\SlideTitleLatinFont{HiraKakuProN-W6}[Scale=1]
   \newjfontfamily\SlideTitleJPFont{HiraKakuProN-W6}[Scale=1]
 }{
@@ -101,15 +85,13 @@
     \newfontfamily\SlideTitleLatinFont{Noto Sans CJK JP}[Scale=1]
     \newjfontfamily\SlideTitleJPFont{Noto Sans CJK JP}[Scale=1]
   }
-}}
+}
 
-\IfFileExists{/host-fonts/system/Menlo.ttc}{
-  \newfontfamily\SlideCodeFont{Menlo.ttc}[Path=/host-fonts/system/,Scale=1]
-}{\IfFontExistsTF{Menlo}{
+\IfFontExistsTF{Menlo}{
   \newfontfamily\SlideCodeFont{Menlo}[Scale=1]
 }{
   \newfontfamily\SlideCodeFont{DejaVu Sans Mono}[Scale=1]
-}}
+}
 
 \newcommand{\SlideBodyFace}{\SlideBodyLatinFont\SlideBodyJPFont}
 \newcommand{\SlideTitleFont}{\SlideTitleLatinFont\SlideTitleJPFont\bfseries}
@@ -237,9 +219,7 @@
 }
 \newcommand{\BaseSectionBackground}{%
   \begin{tikzpicture}[remember picture,overlay]
-    % Use the same subtle page tint as the title and TOC pages.
-    \shade[shading angle=-45,left color=white,right color=SlideLight]
-      (current page.south west) rectangle (current page.north east);
+    \fill[white] (current page.south west) rectangle (current page.north east);
     % PDF boundary: top x=300 bp, bottom x=144 bp.
     \fill[SlideSectionPale]
       (current page.north west) -- ([xshift=300bp]current page.north west) --
@@ -258,9 +238,7 @@
 }
 \newcommand{\BaseSummaryBackground}{%
   \begin{tikzpicture}[remember picture,overlay]
-    % Keep the summary tint in sync with the selected slide palette.
-    \shade[shading angle=-45,left color=white,right color=SlideLight]
-      (current page.south west) rectangle (current page.north east);
+    \fill[SummaryBg] (current page.south west) rectangle (current page.north east);
   \end{tikzpicture}%
 }
 
@@ -396,153 +374,3 @@
 \newcommand{\SlideHthree}[1]{{\SlideTitleFont\fontsize{19.5bp}{24bp}\selectfont\color{SlideAccent}#1}}
 \newcommand{\SlideBullet}{\textbullet}
 \newcommand{\SlideQuote}[1]{#1}
-
-
-\makeatletter
-
-% Ordinary frame contents use automatic Beamer layout.  The existing title,
-% TOC, section and summary constructors are [plain], so these templates do not
-% replace their fixed-coordinate rendering.
-\setbeamersize{text margin left=48bp,text margin right=48bp}
-\setbeamercolor{normal text}{fg=SlideText,bg=white}
-\setbeamercolor{structure}{fg=SlideAccent}
-\setbeamercolor{frametitle}{fg=SlideDark,bg=white}
-\setbeamercolor{framesubtitle}{fg=SlideMuted,bg=white}
-
-\setbeamerfont{normal text}{size*={18.75bp}{28bp},family={\SlideBodyFace}}
-\setbeamerfont{frametitle}{size*={25.5bp}{31bp}}
-\setbeamerfont{framesubtitle}{size*={15bp}{20bp}}
-
-% Beamer restores \normalsize while constructing a frame, so setting only the
-% beamer font is insufficient on this enlarged 960 bp canvas.
-\renewcommand\normalsize{%
-  \@setfontsize\normalsize{18.75bp}{28bp}%
-  \abovedisplayskip 14bp plus 3bp minus 7bp%
-  \belowdisplayskip \abovedisplayskip
-  \abovedisplayshortskip 0bp plus 3bp%
-  \belowdisplayshortskip 8bp plus 3bp minus 4bp%
-}
-\normalsize
-
-% Match the reference heading coordinates while reserving vertical space for
-% flowing content below it.  Drawing the background here keeps it away from
-% the existing [plain] fixed-coordinate frames.
-\setbeamertemplate{frametitle}{%
-  \BaseNormalBackground
-  \SlideNodeBase{48}{48}{}{%
-    \SlideTitleFont\fontsize{25.5bp}{31bp}\selectfont\color{SlideDark}%
-    \insertframetitle}%
-  \ifx\insertframesubtitle\@empty\else
-    \SlideNodeBase{48}{84}{}{%
-      \SlideBodyFace\fontsize{15bp}{20bp}\selectfont\color{SlideMuted}%
-      \insertframesubtitle}%
-  \fi
-  \vbox to \ifx\insertframesubtitle\@empty 72bp\else 101bp\fi{}%
-}
-
-\setbeamertemplate{footline}{\SlidePageNumber}
-\setbeamertemplate{navigation symbols}{}
-
-% Use Beamer's shaded ball marker, scaled and coloured by the current palette.
-% This also lets Beamer calculate the label width and text indentation itself.
-\setbeamercolor{item projected}{fg=white,bg=SlideDark}
-\setbeamercolor{itemize item}{fg=SlideDark}
-\setbeamercolor{itemize subitem}{fg=SlideAccent}
-\setbeamertemplate{items}[ball]
-\setlength{\leftmargini}{37.5bp}
-\setlength{\leftmarginii}{30bp}
-\setlength{\labelsep}{12bp}
-
-% Do not combine Beamer's list-based quote environment with an independently
-% opened beamercolorbox.  One self-contained box owns the rule, indentation and
-% text height, so following paragraphs cannot overlap or shift sideways.
-\RenewDocumentEnvironment{quote}{+b}{%
-  \par\vspace{16bp}%
-  \noindent
-  \begin{tikzpicture}[baseline=(MarpQuote.base)]
-    \node[anchor=base west,inner sep=0bp,outer sep=0bp,align=left,
-      text width=\dimexpr\linewidth-24bp\relax,
-      text=SlideMuted,font=\SlideBodyFace\fontsize{18.75bp}{28bp}\selectfont]
-      (MarpQuote) at (24bp,0bp) {#1};
-    \draw[QuoteBar,line width=4bp]
-      ([xshift=-19bp,yshift=6bp]MarpQuote.north west) --
-      ([xshift=-19bp,yshift=-6bp]MarpQuote.south west);
-  \end{tikzpicture}%
-  \par\vspace{16bp}%
-}{}
-
-% Make the ordinary frames top-aligned by default.  Explicit [c] still works.
-\beamer@centeredfalse
-
-% Reapply the Marp body faces after Beamer has opened its frame group.
-\AtBeginEnvironment{frame}{\SlideBodyFace}
-
-\AtBeginDocument{%
-  \setbeamercolor{normal text}{fg=SlideText,bg=white}%
-  \setbeamercolor{structure}{fg=SlideAccent}%
-}
-
-% ---------------------------------------------------------------------------
-% Flow-based TOC and section numbering
-% ---------------------------------------------------------------------------
-% Preserve the precise renderer, then expose a two-argument SectionFrame.
-% Calling it also creates the Beamer section entry used by \tableofcontents.
-\NewCommandCopy\MarpFixedSectionFrame\SectionFrame
-\RenewDocumentCommand{\SectionFrame}{m m}{%
-  \section{#1}%
-  \MarpFixedSectionFrame{SECTION
-    \ifnum\value{section}<10 0\fi\arabic{section}}{#1}{#2}%
-}
-
-\setbeamerfont{section in toc}{size*={21.75bp}{30bp}}
-\setbeamercolor{section in toc}{fg=SlideText}
-\setbeamertemplate{section in toc}{%
-  \leavevmode
-  \makebox[52.5bp][l]{%
-    \SlideLatinBoldFace\fontsize{19.5bp}{30bp}\selectfont\color{SlideAccent}%
-    \ifnum\inserttocsectionnumber<10 0\fi\inserttocsectionnumber}%
-  {\SlideBodyFace\fontsize{21.75bp}{30bp}\selectfont\color{SlideText}%
-    \inserttocsection}\par
-  \vskip10bp
-  {\color{SlideLine}\hrule width 576bp height 1bp}%
-  \vskip14bp
-}
-\setbeamertemplate{subsection in toc}{}
-
-% No manually listed TOC items are needed.  A second LaTeX pass fills this
-% from the SectionFrame calls in the document.
-\RenewDocumentCommand{\TOCFrame}{}{%
-  \begin{frame}[plain]
-    \BaseTocBackground
-    \SlideNodeBase{48}{48}{}{%
-      \SlideTitleFont\fontsize{25.5bp}{25.5bp}\selectfont\color{SlideDark}目次}
-    \begin{tikzpicture}[remember picture,overlay]
-      \node[anchor=north west,inner sep=0bp,outer sep=0bp,text width=708.75bp]
-        at ([xshift=51bp,yshift=-105bp]current page.north west)
-        {\begin{minipage}{708.75bp}\tableofcontents\end{minipage}};
-    \end{tikzpicture}
-    \SlidePageNumber
-  \end{frame}%
-}
-
-% ---------------------------------------------------------------------------
-% Flow-based summary
-% ---------------------------------------------------------------------------
-% Summary contents are ordinary Beamer material, normally an itemize list.
-% Only the content area's outer position is fixed; individual items flow.
-\RenewDocumentCommand{\SummaryFrame}{m +m}{%
-  \begin{frame}[plain]
-    \BaseSummaryBackground
-    \SlideNodeBase{48}{48}{}{%
-      \SlideTitleFont\fontsize{25.5bp}{25.5bp}\selectfont\color{SlideDark}#1}
-    \begin{tikzpicture}[remember picture,overlay]
-      \node[anchor=north west,inner sep=0bp,outer sep=0bp,text width=816bp,
-        text=SlideText,font=\SlideBodyFace\fontsize{18.75bp}{28bp}\selectfont]
-        at ([xshift=72bp,yshift=-92bp]current page.north west)
-        {\begin{minipage}{816bp}#2\end{minipage}};
-    \end{tikzpicture}
-    \SlidePageNumber
-  \end{frame}%
-}
-
-\makeatother
