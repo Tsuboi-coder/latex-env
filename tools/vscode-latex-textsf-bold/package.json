@@ -1,0 +1,24 @@
+{
+  "name": "latex-textsf-bold",
+  "displayName": "LaTeX textsf Bold in Editor",
+  "description": "Displays the contents of LaTeX \\textsf commands as bold in the VS Code editor.",
+  "version": "1.0.0",
+  "publisher": "kazuma-local",
+  "engines": {
+    "vscode": ">=1.80.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "grammars": [
+      {
+        "scopeName": "text.tex.latex.textsf-bold",
+        "path": "./syntaxes/textsf-bold.tmLanguage.json",
+        "injectTo": [
+          "text.tex.latex"
+        ]
+      }
+    ]
+  }
+}

@@ -69,12 +69,19 @@
 % ============================================================
 
 \RequirePackage{ascmac}
+% ascmac's itembox already inserts 0.3\baselineskip above the box but no
+% matching space below it.  Add 0.5 above and 0.8 below so the visible
+% separation from the surrounding text is approximately symmetric.
+\BeforeBeginEnvironment{itembox}{\par\addvspace{0.5\baselineskip}}
+\AfterEndEnvironment{itembox}{\par\addvspace{0.8\baselineskip}}
 \RequirePackage{circledsteps}
 \RequirePackage[listings,xparse]{tcolorbox}
 \tcbuselibrary{raster,skins,listings,breakable,theorems}
 \RequirePackage{setspace}
 \RequirePackage{needspace}
 \RequirePackage[normalem]{ulem}
+% Keep underlines closer to Japanese text than ulem's font-dependent default.
+\setlength{\ULdepth}{2pt}
 % \RequirePackage{jumoline}
 
 % ============================================================
@@ -577,34 +584,34 @@
 % ============================================================
 
 \newtheoremstyle{mystyle}
-  {}{}{}{}{\bfseries}{}{ }
+  {}{}{}{}{\sffamily}{}{ }
   {\textbf{\thmnote{#3}}　}
 \theoremstyle{mystyle}
 \newtheorem{rules}{法則}[chapter]
 
 \newtheoremstyle{mystyle2}
-  {}{}{}{}{\bfseries}{}{ }
-  {\thmname{#1}\thmnumber{#2}.\ (\textbf{\thmnote{#3}}) }
+  {}{}{}{}{\sffamily}{}{ }
+  {\thmname{#1}\thmnumber{#2}.\ \textnormal{\textrm{(\thmnote{#3})}} }
 \theoremstyle{mystyle2}
 \newtheorem{question}{問題}[chapter]
 \newtheorem{theorem}{定理}[chapter]
 
 \newtheoremstyle{mystyle3}
-  {}{}{}{}{\bfseries}{}{ }
+  {}{}{}{}{\sffamily}{}{ }
   {(\thmname{#1})\,}
 \theoremstyle{mystyle3}
 \newtheorem{kaihou}{解法}[chapter]
 \newtheorem{kaitou}{解答}[chapter]
 
 \newtheoremstyle{mystyle4}
-  {}{}{}{}{\bfseries}{}{ }
-  {\thmname{#1}\thmnumber{#2}.\,(\textbf{\thmnote{#3}})\,}
+  {}{}{}{}{\sffamily}{}{ }
+  {\thmname{#1}\thmnumber{#2}.\,\textnormal{\textrm{(\thmnote{#3})}}\,}
 \theoremstyle{mystyle4}
 \newtheorem{definition}{定義}[chapter]
 \newtheorem{reference}{参考}[chapter]
 
 \newtheoremstyle{mystyle5}
-  {}{}{}{}{\bfseries}{}{ }
+  {}{}{}{}{\sffamily}{}{ }
   {\thmname{#1}. }
 \theoremstyle{mystyle5}
 \newtheorem{hosoku}{補足}[chapter]
@@ -617,7 +624,7 @@
 \newtheorem{memo}{Memo}[chapter]
 
 \newtheoremstyle{mystyle7}
-  {}{}{\small}{}{\bfseries}{}{ }
+  {}{}{\small}{}{\sffamily}{}{ }
   {\thmname{#1}\thmnumber{#2}. }
 \theoremstyle{mystyle7}
 \newtheorem{Konkyo}{根拠}[chapter]
@@ -626,7 +633,7 @@
 \newtheorem{Reidai}{例題}[chapter]
 \newtheorem{Jishuumondai}{自習問題}[chapter]
 
-\newenvironment{hutoji}{\bfseries}{}
+\newenvironment{hutoji}{\sffamily}{}
 \newcommand{\head}[1]{%
   \newenvironment{#1}
     {\begin{quote}\begin{hutoji}}
@@ -635,7 +642,7 @@
 \head{keypoint}
 
 \newtheoremstyle{mystyle8}
-  {}{}{}{}{\bfseries}{}{ }
+  {}{}{}{}{\sffamily}{}{ }
   {\textbf{\thmnote{#3}}\,}
 \theoremstyle{mystyle8}
 \newtheorem{groupcontent}{}[chapter]
