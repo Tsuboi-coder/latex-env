@@ -560,15 +560,38 @@
 
 \newcommand{\spacesi}[1]{\,\si{#1}}
 
+% ============================================================
+% Appendix in table of contents
+% Workaround for ltjsbook / TeX Live 2026
+% ============================================================
+
 \makeatletter
-\let\oldappendix\appendix
+
+% 目次を読んでいるときに
+% 通常章か付録かを区別するためだけのフラグ
+\newif\ifappendixtoc
+\appendixtocfalse
+
+% 元の \appendix はそのまま生かす
+\let\bookmacro@oldappendix\appendix
+
 \renewcommand{\appendix}{%
-  \oldappendix
-  \addtocontents{toc}{%
-    \protect\gdef\protect\@chapapp{\protect\appendixname}%
-    \protect\gdef\protect\@chappos{}%
-  }%
+  \bookmacro@oldappendix
+  % .toc に「ここから付録」と記録
+  \addtocontents{toc}{\protect\appendixtoctrue}%
 }
+
+% TeX Live 2026 の ltjsbook では
+% \l@chapter 内で \numberline -> \numberline@chapter
+% に差し替えられるため、ここを付録対応にする
+\def\numberline@chapter#1{%
+  \ifappendixtoc
+    \numberline@orig{\appendixname#1}%
+  \else
+    \numberline@orig{\prechaptername#1\postchaptername}%
+  \fi
+}
+
 \makeatother
 
 % ============================================================
