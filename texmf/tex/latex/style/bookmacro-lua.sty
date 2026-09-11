@@ -560,9 +560,16 @@
 
 \newcommand{\spacesi}[1]{\,\si{#1}}
 
-\renewcommand{\chaptermark}[1]{%
-  \markboth{第\ \normalfont\thechapter\ 章.\ ~#1}{}%
+\makeatletter
+\let\oldappendix\appendix
+\renewcommand{\appendix}{%
+  \oldappendix
+  \addtocontents{toc}{%
+    \protect\gdef\protect\@chapapp{\protect\appendixname}%
+    \protect\gdef\protect\@chappos{}%
+  }%
 }
+\makeatother
 
 % ============================================================
 % Local equation numbering environment
