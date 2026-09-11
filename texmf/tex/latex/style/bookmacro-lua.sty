@@ -594,6 +594,15 @@
 
 \makeatother
 
+% ヘッダ
+\makeatletter
+\renewcommand{\chaptermark}[1]{%
+  \markboth{%
+    \@chapapp\thechapter\@chappos.\quad #1%
+  }{}%
+}
+\makeatother
+
 % ============================================================
 % Local equation numbering environment
 % ============================================================
