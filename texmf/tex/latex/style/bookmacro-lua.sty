@@ -80,6 +80,7 @@
 \RequirePackage{setspace}
 \RequirePackage{needspace}
 \RequirePackage[normalem]{ulem}
+\RequirePackage{lua-ul}
 % Keep underlines closer to Japanese text than ulem's font-dependent default.
 \setlength{\ULdepth}{2pt}
 % \RequirePackage{jumoline}
@@ -526,7 +527,7 @@
 
 % Original jsbook-only \jsParagraphMark customization was removed.
 
-\newcommand{\kasen}[1]{\uline{#1}}
+\newcommand{\kasen}[1]{\underLine{#1}}
 
 \newcommand{\threespace}{\,\,\,}
 \newcommand{\emspace}{\mbox{　}}
