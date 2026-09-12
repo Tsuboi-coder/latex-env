@@ -1,0 +1,65 @@
+% complex version(複雑)
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamer-design-ff-aug}[2026/09/13 Configurable Frankfurt-based Beamer design]
+
+\RequirePackage{iftex}
+\ifLuaTeX\else
+  \PackageError{beamer-design-ff-aug}
+    {Compile with LuaLaTeX}
+    {This package uses luatexja-fontspec.}%
+\fi
+
+\RequirePackage{luatexja-fontspec}
+\RequirePackage{etoolbox}
+
+% Load Frankfurt before applying this package's customizations so that the
+% theme cannot overwrite them later.
+\usetheme{Frankfurt}
+
+% -----------------------------------------------------------------------------
+% Heading fonts
+% -----------------------------------------------------------------------------
+\providecommand{\HiraginoFontPath}{/host-fonts/system/}
+
+\newfontfamily\FFAugHeadingLatin[
+  Path = \HiraginoFontPath
+]{HelveticaNeue.ttc}
+
+\newjfontfamily\FFAugHeadingJapanese[
+  Path = \HiraginoFontPath
+]{ヒラギノ角ゴシック W6.ttc}
+
+\newcommand{\FFAugHeadingFamily}{%
+  \FFAugHeadingLatin\FFAugHeadingJapanese\mdseries\upshape
+}
+
+\setbeamerfont{title}{family=\FFAugHeadingFamily,series=\mdseries}
+\setbeamerfont{subtitle}{family=\FFAugHeadingFamily,series=\mdseries}
+\setbeamerfont{frametitle}{family=\FFAugHeadingFamily,series=\mdseries}
+\setbeamerfont{framesubtitle}{family=\FFAugHeadingFamily,series=\mdseries}
+\setbeamerfont{section title}{family=\FFAugHeadingFamily,series=\mdseries}
+\setbeamerfont{section in head/foot}{family=\FFAugHeadingFamily,series=\mdseries}
+\setbeamerfont{subsection in head/foot}{family=\FFAugHeadingFamily,series=\mdseries}
+\setbeamerfont{block title}{family=\FFAugHeadingFamily,series=\mdseries}
+
+% -----------------------------------------------------------------------------
+% Footer
+% -----------------------------------------------------------------------------
+\setbeamertemplate{navigation symbols}{}
+\setbeamerfont{page number in head/foot}{size=\footnotesize,series=\mdseries}
+\setbeamertemplate{footline}{%
+  \leavevmode
+  \hbox{%
+    \begin{beamercolorbox}[
+      wd=\paperwidth,
+      ht=2.5ex,
+      dp=2.5ex,
+      rightskip=2.5em
+    ]{page number in head/foot}%
+      \usebeamerfont{page number in head/foot}%
+      \hfill\insertframenumber
+    \end{beamercolorbox}%
+  }%
+}
+
+\endinput

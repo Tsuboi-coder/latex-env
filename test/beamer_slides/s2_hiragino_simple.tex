@@ -1,0 +1,93 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usepackage{hiragino-slides}
+\usepackage{beamer-design-ff-aug}
+\setbeamercolor{structure}{fg=green!40!black}
+
+\title{Transformer入門 〜 ChatGPT の "T" を知る 〜}
+\author{坪井 一馬}
+
+\begin{document}
+
+% \begin{frame}[plain]
+%   \titlepage
+% \end{frame}
+
+{
+  \usebackgroundtemplate{%
+    \includegraphics[
+      width=\paperwidth,
+      height=\paperheight
+    ]{drawing.pdf}%
+  }
+  \setbeamertemplate{footline}{}
+
+  \begin{frame}[plain]
+  \end{frame}
+}
+
+\section{Transformerとは何か}
+
+\begin{frame}{Transformerとは何か}
+  Transformerとは，文章中の単語同士の関係を捉えるための
+  ニューラルネットのアーキテクチャである．
+
+  \begin{itemize}
+    \item 2017年に翻訳モデルとして提案されるが，画像生成等にも応用されるようになっている．
+    \item Attention機構というメカニズムを中心に据える．
+    \item 現在のLLMの基盤技術となっている．
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Transformerの構造}
+  入力
+  \begin{itemize}
+    \item 文章をトークン列として入力する．
+  \end{itemize}
+\end{frame}
+
+\section{Attentionの考え方}
+
+\begin{frame}{段組が入るかどうか}
+  ちゃんと段組を入れることもできますか？
+  
+  \begin{columns}
+    \centering
+    % 左側の列（全体の0.48倍の幅）
+    \begin{column}{0.4\textwidth}
+      ここに左側の文章や箇条書きを書きます。
+      \begin{itemize}
+        \item 要素A
+        \item 要素B
+      \end{itemize}
+    \end{column}
+    
+    % 右側の列（全体の0.48倍の幅）
+    \begin{column}{0.4\textwidth}
+      ここに右側の画像や文章を書きます。
+      %\includegraphics[width=\linewidth]{example-image}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Attentionの考え方}
+  以下の例文を理解するとき，どう考えるか？
+
+  \begin{quote}
+    私は昨日，\textbf{銀行}に行ってお金を下ろした．
+  \end{quote}
+
+  「銀行」を理解するときは，「お金」や「下ろした」との関係に注目します．
+\end{frame}
+
+\section{まとめ}
+
+\begin{frame}{まとめ}
+  \begin{itemize}
+    \item Transformerは単語同士の関係を捉える
+    \item Attentionが文脈に応じた重要度を計算する
+    \item 現在の大規模言語モデルを支える基盤技術である
+  \end{itemize}
+\end{frame}
+
+\end{document}
