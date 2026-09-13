@@ -1,10 +1,10 @@
 % complex version(複雑)
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{beamer-design-ff-aug}[2026/09/13 Configurable Frankfurt-based Beamer design]
+\ProvidesPackage{beamer-design-ff-aug-headerchange}[2026/09/13 Configurable Frankfurt-based Beamer design]
 
 \RequirePackage{iftex}
 \ifLuaTeX\else
-  \PackageError{beamer-design-ff-aug}
+  \PackageError{beamer-design-ff-aug-headerchange}
     {Compile with LuaLaTeX}
     {This package uses luatexja-fontspec.}%
 \fi
@@ -82,31 +82,78 @@
 \setbeamerfont{frametitle}{family=\FFAugHeadingFamily,series=\mdseries}
 \setbeamerfont{framesubtitle}{family=\FFAugHeadingFamily,series=\mdseries}
 \setbeamerfont{section title}{family=\FFAugHeadingFamily,series=\mdseries}
-\setbeamerfont{section in head/foot}{family=\FFAugHeadingFamily,series=\mdseries}
+\setbeamerfont{section in head/foot}{family=\FFAugBodyFamily,series=\mdseries,size=\scriptsize}
 \setbeamerfont{subsection in head/foot}{family=\FFAugHeadingFamily,series=\mdseries}
 \setbeamerfont{block title}{family=\FFAugHeadingFamily,series=\mdseries}
 
-% Compact list indentation (Beamer's defaults are 2em at every level).
-\setlength{\leftmargini}{1.4em}
-\setlength{\leftmarginii}{1.3em}
-\setlength{\leftmarginiii}{1.2em}
-
-% Compact replacement for Beamer's frame-number footline.  Keep only a small
-% gap above the number and avoid the default strut and bottom padding.
-\setbeamerfont{page number in head/foot}{size=\tiny,series=\mdseries}
-\defbeamertemplate{footline}{ff aug frame number}{%
-  \vskip0.25pt%
-  \hbox to\paperwidth{%
-    \hfill%
-    \usebeamercolor[fg]{page number in head/foot}%
-    \usebeamerfont{page number in head/foot}%
-    \usebeamertemplate*{page number in head/foot}%
-    \kern1em%
-  }%
-  \vskip2pt%
-}[action]{%
-  \setbeamertemplate{page number in head/foot}[totalframenumber]%
+% -----------------------------------------------------------------------------
+% Headline
+% -----------------------------------------------------------------------------
+% Retain Frankfurt's smoothbars geometry, shading, and subsection row, but
+% replace the section-navigation progress display with the current section.
+% The section band is 0.5ex taller than Frankfurt's default.
+\AtBeginDocument{%
+  \ifbeamer@sb@subsection%
+    \pgfdeclareverticalshading{beamer@barshade}{\the\paperwidth}{%
+      color(0ex)=(subsection in head/foot.bg);%
+      color(2.25ex)=(subsection in head/foot.bg);%
+      color(3.25ex)=(section in head/foot.bg);%
+      color(9.25ex)=(section in head/foot.bg)%
+    }%
+  \else%
+    \pgfdeclareverticalshading{beamer@barshade}{\the\paperwidth}{%
+      color(0ex)=(section in head/foot.bg);%
+      color(6.5ex)=(section in head/foot.bg)%
+    }%
+  \fi%
 }
-\defbeamertemplatealias{footline}{frame number}{ff aug frame number}
+
+\setbeamertemplate{headline}{%
+  \pgfuseshading{beamer@barshade}%
+  \vskip-0.05ex%
+  \begin{beamercolorbox}[wd=\paperwidth,ht=0ex,dp=0ex]{empty}%
+    \begin{pgfpicture}%
+      \begin{pgfscope}%
+        \ifbeamer@sb@subsection%
+          \pgfsetfillcolor{subsection in head/foot.bg}%
+        \else%
+          \pgfsetfillcolor{section in head/foot.bg}%
+        \fi%
+        \pgfpathrectangle{\pgfpoint{-.5\paperwidth}{-0.5ex}}{\pgfpoint{\paperwidth}{1ex}}%
+        \pgfsetfading{beamer@belowframetitlemask}{}%
+        \pgfusepath{fill}%
+      \end{pgfscope}%
+    \end{pgfpicture}%
+  \end{beamercolorbox}%
+  \ifbeamer@sb@subsection%
+    \vskip-12.25ex%
+  \else%
+    \vskip-9.35ex%
+  \fi%
+  \begin{beamercolorbox}[
+    ignorebg,
+    ht=1.5ex,
+    dp=1ex,
+    leftskip=.3cm,
+    rightskip=.3cm plus1fil
+  ]{section in head/foot}%
+    \raisebox{0.75ex}[0pt][0pt]{%
+      \usebeamerfont{section in head/foot}\insertsectionhead%
+    }%
+  \end{beamercolorbox}%
+  \ifbeamer@sb@subsection%
+    \begin{beamercolorbox}[
+      ignorebg,
+      ht=2.125ex,
+      dp=1.125ex,
+      leftskip=.3cm,
+      rightskip=.3cm plus1fil
+    ]{subsection in head/foot}%
+      \usebeamerfont{subsection in head/foot}%
+      \usebeamertemplate{subsection in head/foot}%
+    \end{beamercolorbox}%
+    \vskip-0.1ex%
+  \fi%
+}
 
 \endinput

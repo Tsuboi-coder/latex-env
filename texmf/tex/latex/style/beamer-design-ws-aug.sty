@@ -86,27 +86,4 @@
 \setbeamerfont{subsection in head/foot}{family=\FFAugHeadingFamily,series=\mdseries}
 \setbeamerfont{block title}{family=\FFAugHeadingFamily,series=\mdseries}
 
-% Compact list indentation (Beamer's defaults are 2em at every level).
-\setlength{\leftmargini}{1.4em}
-\setlength{\leftmarginii}{1.3em}
-\setlength{\leftmarginiii}{1.2em}
-
-% Compact replacement for Beamer's frame-number footline.  Keep only a small
-% gap above the number and avoid the default strut and bottom padding.
-\setbeamerfont{page number in head/foot}{size=\tiny,series=\mdseries}
-\defbeamertemplate{footline}{ff aug frame number}{%
-  \vskip0.25pt%
-  \hbox to\paperwidth{%
-    \hfill%
-    \usebeamercolor[fg]{page number in head/foot}%
-    \usebeamerfont{page number in head/foot}%
-    \usebeamertemplate*{page number in head/foot}%
-    \kern1em%
-  }%
-  \vskip2pt%
-}[action]{%
-  \setbeamertemplate{page number in head/foot}[totalframenumber]%
-}
-\defbeamertemplatealias{footline}{frame number}{ff aug frame number}
-
 \endinput

@@ -1,7 +1,7 @@
-\documentclass[aspectratio=169]{beamer}
+\documentclass[aspectratio=169,professionalfonts]{beamer}
 
-\usepackage{hiragino-slides}
 \usepackage{beamer-design-ff-aug}
+\usepackage{setspace} % プリアンブルに追加
 \setbeamercolor{structure}{fg=green!40!black}
 
 \setbeamertemplate{navigation symbols}{}
@@ -35,6 +35,43 @@
 \begin{frame}
   \frametitle{目次}
   \tableofcontents
+\end{frame}
+
+\section{自己紹介}
+
+\begin{frame}{坪井 一馬 Kazuma TSUBOI}
+    \centering
+    % columns環境の開始（文字が上下中央に揃うようにオプション[c]を指定）
+    \begin{columns}[c]
+        \begin{column}{0.4\textwidth}
+            \centering
+            % [width=\textwidth] でカラム幅いっぱいに画像を拡大縮小
+            \includegraphics[width=1\textwidth]{self-introduce.pdf} 
+        \end{column}
+        
+        \begin{column}{0.55\textwidth}
+          \begingroup
+          \footnotesize
+          \begin{spacing}{1}
+            \begin{itemize}
+              \setlength{\itemsep}{0.5pt} 
+              \item {\large \textcolor{red!50!blue}{\textsf{INTP 論理学者}}}
+              \item 21歳，神奈川県出身，実家暮らし
+              \item 横浜国立大理工学部，化学・生命系学科，化学EP
+              \begin{itemize}
+                \scriptsize
+                \item 研究テーマ「自然言語指示に基づく分子生成モデルの開発」
+                \item 大学院は内部進学予定です．
+              \end{itemize}
+              \item 東京大学松尾・岩澤研究室で共同研究インターン
+              \item Lumos運営，機械学習PJ主宰者，システムチームメンバー
+              \item 以前所属のサークルでケーブルテレビ局の番組制作のリーダーをしていました．
+              \item 趣味は様々: 旅行/コーヒー/酒/ゲーム/ラーメン/激辛/ご当地グルメ/名古屋メシ/喫茶店の雰囲気/離島でゆっくり流れる時間を過ごす
+            \end{itemize}
+          \end{spacing}
+          \endgroup
+        \end{column}
+    \end{columns}
 \end{frame}
 
 \section{Transformerとは何か}
@@ -82,10 +119,10 @@
 \end{frame}
 
 \begin{frame}{Attentionの考え方}
-  以下の例文を理解するとき，どう考えるか？
+  以下の\textsf{Example}を理解するとき，どう考えるか？
 
   \begin{quote}
-    私は昨日，\textbf{銀行}に行ってお金を下ろした．
+    私は昨日，\textsf{銀行 bank}に行ってお金を下ろした．
   \end{quote}
 
   「銀行」を理解するときは，「お金」や「下ろした」との関係に注目します．
