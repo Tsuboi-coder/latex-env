@@ -539,7 +539,12 @@
       \node[anchor=north west,inner sep=0bp,outer sep=0bp,text width=816bp,
         text=SlideText,font=\SlideBodyFace\fontsize{18.75bp}{28bp}\selectfont]
         at ([xshift=72bp,yshift=-92bp]current page.north west)
-        {\begin{minipage}{816bp}#2\end{minipage}};
+        {\begin{minipage}{816bp}%
+           % Summary lists need less indentation than ordinary content lists.
+           % Keep this local so other frames retain the standard 37.5 bp.
+           \setlength{\leftmargini}{27bp}%
+           #2%
+         \end{minipage}};
     \end{tikzpicture}
     \SlidePageNumber
   \end{frame}%

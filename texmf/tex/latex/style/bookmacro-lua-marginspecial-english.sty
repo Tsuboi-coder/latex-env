@@ -102,6 +102,8 @@
 \RequirePackage{diagbox}
 \RequirePackage{caption}
 \RequirePackage{placeins}
+\RequirePackage{tocloft}
+\RequirePackage{emptypage}
 
 \captionsetup{
   margin=2em,
@@ -464,7 +466,6 @@
 
 \renewcommand{\thesubsubsection}{(\alph{subsubsection})}
 \renewcommand{\thefootnote}{*\arabic{footnote}}
-\setlength{\parindent}{0pt}
 
 % ============================================================
 % Title page
@@ -529,6 +530,37 @@
 \renewcommand{\thepart}{\arabic{part}}
 \setcounter{tocdepth}{2}
 
+% Keep the standard book sizes and spacing, but use sans serif for chapter
+% labels/titles and section titles.
+\titleformat{\chapter}[display]
+  {\normalfont\huge\sffamily\bfseries}
+  {\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titleformat{\section}
+  {\normalfont\Large\sffamily\bfseries}
+  {\thesection}{1em}{}
+
+% In the table of contents, the title and chapter-or-higher entries use sans
+% serif, while section-or-lower entries retain the roman family.
+\renewcommand{\cftpartfont}{\sffamily\bfseries}
+\renewcommand{\cftpartpagefont}{\sffamily\bfseries}
+\renewcommand{\cftchapfont}{\sffamily\bfseries}
+\renewcommand{\cftchappagefont}{\sffamily\bfseries}
+\renewcommand{\cftsecfont}{\rmfamily}
+\renewcommand{\cftsecpagefont}{\rmfamily}
+\renewcommand{\cftsubsecfont}{\rmfamily}
+\renewcommand{\cftsubsecpagefont}{\rmfamily}
+\renewcommand{\cftsubsubsecfont}{\rmfamily}
+\renewcommand{\cftsubsubsecpagefont}{\rmfamily}
+\renewcommand{\cfttoctitlefont}{\normalfont\Huge\sffamily\bfseries}
+
+% tocloft replaces \tableofcontents without the standard book class's
+% \chapter* call, so restore the open-right page break explicitly.
+\makeatletter
+\pretocmd{\@cfttocstart}{\cleardoublepage}{}{% 
+  \PackageWarning{bookmacro-lua-marginspecial-english}{Could not restore open-right TOC behavior}%
+}
+\makeatother
+
 % Original jsbook-only \jsParagraphMark customization was removed.
 
 \newcommand{\kasen}[1]{\uline{#1}}
@@ -569,6 +601,21 @@
 % Running heads
 % ============================================================
 
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{{\rmfamily\bfseries\thepage}\hfill{\rmfamily\leftmark}}
+\fancyhead[RO]{{\rmfamily\rightmark}\hfill{\rmfamily\bfseries\thepage}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyhead[LE]{\rmfamily\bfseries\thepage}%
+  \fancyhead[RO]{\rmfamily\bfseries\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+
 \makeatletter
 \renewcommand{\chaptermark}[1]{%
   \markboth{\ifnum\value{secnumdepth}>-1 \@chapapp\ \thechapter.\quad\fi #1}{}%
@@ -602,7 +649,7 @@
 
 \newtheoremstyle{mystyle2}
   {}{}{}{}{\sffamily}{}{ }
-  {\thmname{#1}\thmnumber{#2}.\ \textnormal{\textrm{(\thmnote{#3})}} }
+  {\thmname{#1}\,\thmnumber{#2}.\ \textnormal{\textrm{(\thmnote{#3})}} }
 \theoremstyle{mystyle2}
 \newtheorem{question}{Question}[chapter]
 \newtheorem{theorem}{Theorem}[chapter]
@@ -616,7 +663,7 @@
 
 \newtheoremstyle{mystyle4}
   {}{}{}{}{\sffamily}{}{ }
-  {\thmname{#1}\thmnumber{#2}.\,\textnormal{\textrm{(\thmnote{#3})}}\,}
+  {\thmname{#1}\,\thmnumber{#2}.\,\textnormal{\textrm{(\thmnote{#3})}}\,}
 \theoremstyle{mystyle4}
 \newtheorem{definition}{Definition}[chapter]
 \newtheorem{reference}{Reference}[chapter]
@@ -636,7 +683,7 @@
 
 \newtheoremstyle{mystyle7}
   {}{}{\small}{}{\sffamily}{}{ }
-  {\thmname{#1}\thmnumber{#2}. }
+  {\thmname{#1}\,\thmnumber{#2}. }
 \theoremstyle{mystyle7}
 \newtheorem{Konkyo}{Justification}[chapter]
 \newtheorem{Dougubako}{Toolbox}[chapter]
