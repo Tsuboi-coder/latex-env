@@ -109,4 +109,18 @@
 }
 \defbeamertemplatealias{footline}{frame number}{ff aug frame number}
 
+% ---------------------
+
+\usepackage{setspace} % プリアンブルに追加
+\usepackage{tcolorbox}
+  \tcbuselibrary{raster,skins}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+\AtBeginSection[]{
+  \begin{frame}{目次}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
 \endinput
