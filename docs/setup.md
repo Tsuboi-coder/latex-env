@@ -81,7 +81,7 @@ Linux / WSL ではこのマウントを省略します。ヒラギノを要求�
 
 ## Visual Studio Code
 
-LaTeX Workshop のユーザー設定に次を追加します。`command` は実際にクローンした場所の絶対パスへ変更してください。
+LaTeX Workshop のユーザー設定に次を追加します。`command` と `LATEX_STYLES_ROOT` は、実際にクローンした場所の絶対パスへ変更してください。独自スタイルを使わない場合は `LATEX_STYLES_ROOT` を省略できます。
 
 ```json
 {
@@ -89,6 +89,10 @@ LaTeX Workshop のユーザー設定に次を追加します。`command` は実�
     {
       "name": "docker-lualatex",
       "command": "/absolute/path/to/latex-env/scripts/latexmk-docker",
+      "env": {
+        "LATEX_IMAGE": "kazuma-latex:2026",
+        "LATEX_STYLES_ROOT": "/absolute/path/to/latex-styles/texmf"
+      },
       "args": [
         "-lualatex",
         "-shell-escape",
@@ -109,7 +113,33 @@ LaTeX Workshop のユーザー設定に次を追加します。`command` は実�
 }
 ```
 
-GUI から起動した Visual Studio Code はシェルの環境変数を引き継がない場合があります。その場合は、ターミナルから `code` を起動するか、LaTeX Workshop のツール設定で環境変数を渡してください。
+既存の `settings.json` がある場合は、外側の `{}` を重複させず、各プロパティを既存のオブジェクトへ追加してください。現在の配置なら `command` と `LATEX_STYLES_ROOT` は次の値です。
+
+```json
+"command": "/Users/kazuma/latex-env/scripts/latexmk-docker",
+"env": {
+  "LATEX_IMAGE": "kazuma-latex:2026",
+  "LATEX_STYLES_ROOT": "/Users/kazuma/Documents/Repository/latex-styles/texmf"
+}
+```
+
+GUI から起動した Visual Studio Code は、シェルで `export` した環境変数を引き継がない場合があります。そのため、LaTeX Workshop の `tools[].env` に上記の値を指定する方法が確実です。設定後はコマンドパレットから **Developer: Reload Window** を実行し、LaTeX Workshop で **Docker LuaLaTeX** レシピを選択してビルドします。
+
+スタイルを変更したのに `latexmk` が更新不要と判断する場合は、`args` の先頭へ一時的に `"-g"` を追加すると、スタイルを含めて強制的に再コンパイルできます。
+
+```json
+"args": [
+  "-g",
+  "-lualatex",
+  "-shell-escape",
+  "-synctex=1",
+  "-interaction=nonstopmode",
+  "-file-line-error",
+  "%DOCFILE_EXT%"
+]
+```
+
+通常のビルドへ戻すときは `"-g"` を外してください。
 
 ## 日常的な使い方
 
