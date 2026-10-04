@@ -1,16 +1,25 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-LATEX_ENV_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+LATEX_IMAGE="${LATEX_IMAGE:-kazuma-latex:2026}"
 
 DOCKER_ARGS=(
     --rm
     -v "$(pwd):/work"
-    -v "$LATEX_ENV_DIR/texmf:/root/texmf:ro"
     -w /work
 )
+
+# 独自スタイルは任意。指定された TEXMF ツリーだけを読み取り専用で共有する。
+if [[ -n "${LATEX_STYLES_ROOT:-}" ]]; then
+    if [[ ! -d "$LATEX_STYLES_ROOT" ]]; then
+        echo "latexmk-docker: LATEX_STYLES_ROOT is not a directory: $LATEX_STYLES_ROOT" >&2
+        exit 2
+    fi
+    DOCKER_ARGS+=(
+        -v "$LATEX_STYLES_ROOT:/root/texmf:ro"
+    )
+fi
 
 # macOS のシステムフォントは、実在するホストでだけ共有する。
 # Linux / WSL ではこのマウントを省き、TeX Live 収録フォントを使用する。
@@ -21,5 +30,5 @@ if [ -d "/System/Library/Fonts" ]; then
 fi
 
 docker run "${DOCKER_ARGS[@]}" \
-    kazuma-latex:2026 \
+    "$LATEX_IMAGE" \
     latexmk "$@"

@@ -1,128 +1,87 @@
 # LaTeX 実行環境のセットアップ
 
-この文書では、新しい PC に本リポジトリの Docker ベース LaTeX 環境をセットアップする方法を説明します。
-
-セットアップの流れは次のとおりです。
-
-1. Git、Docker、必要に応じて Visual Studio Code をインストールする
-2. リポジトリをクローンし、Docker イメージをビルドする
-3. macOS では、必要に応じてシステムフォントを Docker と共有する
-4. Docker 内の LaTeX と共有 `texmf` を確認する
-5. テスト文書をコンパイルする
-6. Visual Studio Code を使用する場合は LaTeX Workshop を設定する
-
-すべての動作確認が成功すれば、ホスト側に MacTeX や TeX Live を導入せずに執筆環境を利用できます。
+このリポジトリは、Docker 上の TeX Live / LuaLaTeX、`latexmk`、Python、Pygments を提供します。独自スタイルは含まず、`latex-env` だけで基本的な文書をビルドできます。
 
 ## 前提条件
 
-あらかじめ、次のソフトウェアをインストールしてください。
-
 - Git
-- Docker
-  - macOS / Windows: Docker Desktop
-  - Linux: Docker Engine
-- Visual Studio Code（エディターからビルドする場合）
-- Visual Studio Code 拡張機能 LaTeX Workshop（同上）
+- Docker Desktop（macOS / Windows）または Docker Engine（Linux）
+- Visual Studio Code と LaTeX Workshop（エディターからビルドする場合のみ）
 
-ホスト側に MacTeX や TeX Live をインストールする必要はありません。LaTeX の実行環境は Docker イメージ内に用意されます。
+ホスト側への MacTeX や TeX Live のインストールは不要です。Windows では Docker Desktop の WSL 2 バックエンドを有効にし、WSL のシェルから補助スクリプトを実行してください。
 
-インストール後、ターミナルで次のコマンドが成功することを確認します。
-
-```shell
-git --version
-docker --version
-docker run --rm hello-world
-```
-
-Docker Desktop を使用する場合は、以降の操作を始める前に Docker Desktop を起動してください。
-
-## 1. リポジトリの取得
-
-任意の作業用ディレクトリで、リポジトリをクローンします。
+## 1. 取得とイメージのビルド
 
 ```shell
 git clone https://github.com/Tsuboi-coder/latex-env.git
 cd latex-env
-```
-
-## 2. Docker イメージのビルド
-
-リポジトリのルートディレクトリで次のコマンドを実行します。
-
-```shell
 docker build -t kazuma-latex:2026 .
 ```
 
-この処理では TeX Live のイメージを取得し、フォント関連のツール、Python、および Pygments を追加します。初回はイメージのダウンロードに時間とディスク容量が必要です。
-
-ビルド後、イメージが作成されたことを確認します。
+イメージ名を変える場合は、ビルド時のタグと実行時の `LATEX_IMAGE` を一致させます。
 
 ```shell
-docker image ls kazuma-latex:2026
+docker build -t my-latex:2026 .
+export LATEX_IMAGE=my-latex:2026
 ```
 
-## 3. 補助スクリプトの確認
+`scripts/latexmk-docker` の既定値は `kazuma-latex:2026` です。
 
-`scripts/latexmk-docker` はスクリプト自身の位置からリポジトリのルートと `texmf` ディレクトリを特定します。そのため、クローン先に応じたパスの書き換えは不要です。
-
-補助スクリプトに実行権限があることを確認します。権限がない場合は付与してください。
-
-```shell
-chmod +x scripts/latexmk-docker
-```
-
-> [!NOTE]
-> 補助スクリプトは、実行時のカレントディレクトリをコンテナの `/work` に割り当てます。通常はリポジトリのルートディレクトリから実行してください。
-
-補助スクリプトは macOS、Linux、および WSL に対応しています。macOS では `/System/Library/Fonts` が存在するときだけシステムフォントをコンテナへ共有します。Linux と WSL ではこのマウントを省略し、コンテナに収録されたフォントを使用します。共有 `texmf` のマウント先や macOS 上の動作は従来どおりです。
-
-Windows では、Docker Desktop の WSL 2 バックエンドを有効にし、WSL のシェルから実行してください。速度とファイル監視の安定性のため、リポジトリは `/mnt/c/...` ではなく WSL 側のホームディレクトリ（例: `~/latex-env`）へ配置することを推奨します。
-
-## 4. 動作確認
-
-まず、LuaLaTeX と latexmk が Docker イメージ内で実行できることを確認します。これらを `docker run` 経由で呼び出すことで、ホスト側の TeX 環境を誤って使用していないことも確認できます。
+## 2. 基本環境の確認
 
 ```shell
 docker run --rm kazuma-latex:2026 lualatex --version
 docker run --rm kazuma-latex:2026 latexmk --version
-```
 
-次に、独自スタイルがコンテナから見えることを確認します。リポジトリのルートディレクトリで実行してください。
-
-```shell
-docker run --rm \
-  -v "$(pwd)/texmf:/root/texmf:ro" \
-  kazuma-latex:2026 \
-  kpsewhich teststyle.sty
-```
-
-次のパスが表示されれば、`texmf` のマウントは成功しています。
-
-```text
-/root/texmf/tex/latex/style/teststyle.sty
-```
-
-最後に、LuaLaTeX を使って基本機能を段階的に確認する3つのテスト文書をコンパイルします。`3_minted_python.tex` では `minted` が外部プログラムの Pygments を実行するため、`-shell-escape` が必要です。
-
-```shell
 cd test
 ../scripts/latexmk-docker -lualatex 1_lualatex_basic.tex
-../scripts/latexmk-docker -lualatex 2_shared_style_math.tex
 ../scripts/latexmk-docker -lualatex -shell-escape 3_minted_python.tex
 cd ..
 ```
 
-次の PDF が生成または更新されれば、セットアップは完了です。
+`1_lualatex_basic.pdf` と `3_minted_python.pdf` が生成または更新されれば、基本環境は利用できます。`minted` を使う文書には `-shell-escape` が必要です。信頼できない文書には付けないでください。
 
-- `test/1_lualatex_basic.pdf`: LuaLaTeX による日本語・英語の基本組版
-- `test/2_shared_style_math.pdf`: 共有 `texmf` のスタイル読み込み、数式、化学式
-- `test/3_minted_python.pdf`: `minted`、Python、Pygments、`shell-escape`
+## 3. 独自スタイルを使う（任意）
 
-ここまで成功すれば、TeX Live、LuaLaTeX、独自スタイル、Python、Pygments、および `minted` が Docker 内で利用できています。
+独自スタイルは別リポジトリの [`latex-styles`](https://github.com/Tsuboi-coder/latex-styles) で管理します。利用する場合だけクローンし、その `texmf` ディレクトリを環境変数で指定します。
 
-## 5. Visual Studio Code の設定
+```shell
+git clone https://github.com/Tsuboi-coder/latex-styles.git "$HOME/latex-styles"
+export LATEX_STYLES_ROOT="$HOME/latex-styles/texmf"
+```
 
-Visual Studio Code からコンパイルする場合は、LaTeX Workshop をインストールし、ユーザー設定の `settings.json` に次の設定を追加します。既存の設定がある場合は、外側の `{}` を重複させず、該当するプロパティを追加してください。
+現在の配置例では次の値です。
+
+```shell
+export LATEX_STYLES_ROOT="$HOME/Documents/Repository/latex-styles/texmf"
+```
+
+補助スクリプトは、指定されたディレクトリをコンテナの `/root/texmf` へ読み取り専用でマウントします。未設定ならマウントせず、不正なパスなら誤設定を表示して終了します。
+
+```shell
+./scripts/latexmk-docker -lualatex path/to/document.tex
+```
+
+設定値は [`.env.example`](../.env.example) を参照してください。このファイルは説明用であり、補助スクリプトが `.env` を自動で読み込むことはありません。シェルの設定ファイルなどから環境変数を `export` してください。
+
+スタイルが見えるかは次のように確認できます。
+
+```shell
+docker run --rm \
+  -v "$LATEX_STYLES_ROOT:/root/texmf:ro" \
+  "${LATEX_IMAGE:-kazuma-latex:2026}" \
+  kpsewhich bookmacro-lua.sty
+```
+
+## macOS のシステムフォント
+
+macOS では `/System/Library/Fonts` が存在するときだけ、補助スクリプトが `/host-fonts/system` へ読み取り専用でマウントします。フォントファイルをリポジトリやイメージへコピーすることはありません。ヒラギノを使うスタイルの必要ファイルと確認方法は、`latex-styles` の `docs/hiragino-fonts.md` を参照してください。
+
+Linux / WSL ではこのマウントを省略します。ヒラギノを要求しない文書とスタイルは同じ補助スクリプトで利用できます。
+
+## Visual Studio Code
+
+LaTeX Workshop のユーザー設定に次を追加します。`command` は実際にクローンした場所の絶対パスへ変更してください。
 
 ```json
 {
@@ -143,122 +102,43 @@ Visual Studio Code からコンパイルする場合は、LaTeX Workshop をイ�
   "latex-workshop.latex.recipes": [
     {
       "name": "Docker LuaLaTeX",
-      "tools": [
-        "docker-lualatex"
-      ]
+      "tools": ["docker-lualatex"]
     }
   ],
   "latex-workshop.latex.recipe.default": "first"
 }
 ```
 
-`command` は、クローンしたリポジトリ内にある `scripts/latexmk-docker` の絶対パスに変更してください。ターミナルで次のコマンドを実行するとパスを確認できます。
-
-```shell
-cd latex-env
-pwd
-```
-
-たとえば `pwd` が `/Users/example/latex-env` を返した場合、`command` は `/Users/example/latex-env/scripts/latexmk-docker` です。これは Visual Studio Code が任意の文書ディレクトリから補助スクリプトを呼び出せるようにするための設定であり、補助スクリプト自体や `texmf` のパスを書き換える必要はありません。
-
-> [!IMPORTANT]
-> 文書の引数には拡張子を含む `%DOCFILE_EXT%` を使用します。`%DOC%` に変更すると、環境や文書によって正しくビルドできない場合があります。
-
-設定後、LaTeX Workshop のレシピから `Docker LuaLaTeX` を選択して文書をビルドします。このレシピには `-shell-escape` が含まれるため、`minted` を使用する文書もコンパイルできます。信頼できない LaTeX 文書には使用しないでください。
+GUI から起動した Visual Studio Code はシェルの環境変数を引き継がない場合があります。その場合は、ターミナルから `code` を起動するか、LaTeX Workshop のツール設定で環境変数を渡してください。
 
 ## 日常的な使い方
 
-コンパイル対象の `.tex` ファイルを指定して、補助スクリプトを実行します。
-
 ```shell
 ./scripts/latexmk-docker -lualatex path/to/document.tex
+./scripts/latexmk-docker -c path/to/document.tex  # 中間ファイルを削除
+./scripts/latexmk-docker -C path/to/document.tex  # PDF を含む生成物を削除
 ```
 
-生成された中間ファイルを削除する場合は、次のように実行します。
-
-```shell
-./scripts/latexmk-docker -c path/to/document.tex
-```
-
-PDF を含む生成物をすべて削除する場合は `-C` を使用します。
-
-```shell
-./scripts/latexmk-docker -C path/to/document.tex
-```
-
-## 独自スタイルの追加
-
-独自の `.sty` ファイルは、次のディレクトリ以下に配置します。
-
-```text
-texmf/tex/latex/
-```
-
-このディレクトリはコンテナ内の `/root/texmf` に読み取り専用でマウントされます。たとえば `texmf/tex/latex/style/example.sty` を追加すると、LaTeX 文書から次のように読み込めます。
-
-```tex
-\usepackage{example}
-```
-
-## Docker イメージの更新
-
-`Dockerfile` を変更した場合や、ベースとなる TeX Live イメージを更新したい場合は、再度ビルドします。
-
-```shell
-docker build --pull -t kazuma-latex:2026 .
-```
-
-## フォントについて
-
-macOS のヒラギノと Helvetica Neue を利用する設定に対応しています。フォントファイルはライセンスと環境依存性を考慮し、このリポジトリへのコミットや Docker イメージへのコピーを行いません。ホストの `/System/Library/Fonts` をコンテナへ読み取り専用でマウントします。
-
-新しい Mac では Docker Desktop の共有設定、実際のフォントファイル名、および専用テスト文書を確認する必要があります。詳しい手順、スタイルの使い分け、管理範囲、トラブルシューティングは [macOS のヒラギノフォントを Docker から利用する](hiragino-fonts.md) を参照してください。
+補助スクリプトは実行時のカレントディレクトリを `/work` に割り当てます。文書のあるディレクトリから、補助スクリプトを絶対パスまたは相対パスで呼び出してください。
 
 ## トラブルシューティング
 
 ### Docker デーモンに接続できない
 
-`Cannot connect to the Docker daemon` などと表示される場合は、Docker Desktop または Docker Engine が起動していることを確認してください。
+Docker Desktop または Docker Engine が起動していることを確認してください。
 
-### `Unable to find image 'kazuma-latex:2026' locally` と表示される
+### Docker イメージが見つからない
 
-Docker イメージが未作成です。「Docker イメージのビルド」の手順を実行してください。
+イメージをビルドし、必要なら `LATEX_IMAGE` をビルド時のタグへ設定してください。
 
 ### 独自スタイルが見つからない
 
-次の点を確認してください。
+`LATEX_STYLES_ROOT` が `texmf/tex/latex/...` を含む TEXMF ルートを指すことを確認し、上記の `kpsewhich` で切り分けてください。
 
-- リポジトリ内に `texmf` ディレクトリが存在する
-- `.sty` ファイルが `texmf/tex/latex/` 以下に置かれている
-- ファイル名と `\usepackage{...}` の名前が一致している
+### Linux / WSL で生成物が root 所有になる
 
-コンテナからスタイルファイルが見えるかは、次のコマンドで確認できます。
+コンテナは既定ユーザーで処理するため、生成ファイルが root 所有になることがあります。単純な `--user` の追加では LuaLaTeX のフォントキャッシュが書き込めなくなる場合があるため、生成先とキャッシュの双方を非 root ユーザーが書き込める構成が必要です。
 
-```shell
-docker run --rm \
-  -v "$(pwd)/texmf:/root/texmf:ro" \
-  kazuma-latex:2026 \
-  kpsewhich teststyle.sty
-```
+## 再現性について
 
-### `minted` のコンパイルに失敗する
-
-`minted` を使用する文書には `-shell-escape` が必要です。
-
-```shell
-./scripts/latexmk-docker -lualatex -shell-escape path/to/document.tex
-```
-
-それでも失敗する場合は、`test/3_minted_python.tex` をコンパイルし、Docker イメージ内の Python・Pygments を含む共通環境に問題がないか切り分けてください。
-
-### Linux / WSL で生成物の所有者が root になる
-
-補助スクリプトはコンテナの既定ユーザーで処理を実行します。そのため、Linux / WSL では生成ファイルが root 所有になることがあります。LuaLaTeX のフォントキャッシュも書き込み可能に保つ必要があるため、単純に Docker の `--user` オプションを追加するだけでは動作しません。必要な場合は、生成先と TeX のキャッシュディレクトリの両方を非 root ユーザーが書き込める構成にしてください。
-
-## 現在の注意事項
-
-- Docker イメージ名とタグ `kazuma-latex:2026` は、`scripts/latexmk-docker` とビルドコマンドで一致させる必要があります。
-- ヒラギノ専用の `hiragino-base` と `hiragino-slides` は macOS 固有です。Linux / WSL では、これらを読み込まない文書と、代替フォントを備えたスタイルを利用してください。
-- `texlive/texlive:latest` を使用しているため、異なる時期にビルドすると TeX Live の内容が変わる可能性があります。
-- 環境が安定した段階で、Dockerfile の TeX Live イメージを固定タグへ変更し、リポジトリにもバージョンタグを付けると再現性を高められます。
-- 補助スクリプトは Bash を使用するため、Windows では WSL などの Bash 環境が必要です。
+現在の `Dockerfile` は `texlive/texlive:latest` を基にしているため、ビルド時期によって TeX Live の内容が変わる可能性があります。安定版を切る際はベースイメージを固定し、`latex-env` と、それに対してテストした `latex-styles` の組み合わせをタグで記録してください。

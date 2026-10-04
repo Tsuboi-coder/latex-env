@@ -1,20 +1,27 @@
 # latex-env
 
-Docker 上の TeX Live / LuaLaTeX と、リポジトリで共有する `texmf` を利用する LaTeX 環境です。セットアップ方法は [docs/setup.md](docs/setup.md) を参照してください。
+再現可能な Docker ベースの LuaLaTeX ビルド環境です。TeX Live、`latexmk`、Python、Pygments を提供し、独自スタイルがなくても単独で利用できます。
 
-## テスト文書
+独自スタイルは別リポジトリの [`latex-styles`](https://github.com/Tsuboi-coder/latex-styles) で管理します。必要な場合だけ `LATEX_STYLES_ROOT` でその TEXMF ツリーをマウントします。依存方向は `latex-styles` から本環境への一方向です。
 
-`test/` の文書は、次の順に環境の機能を確認します。
+```shell
+docker build -t kazuma-latex:2026 .
+export LATEX_STYLES_ROOT="$HOME/Documents/Repository/latex-styles/texmf" # 任意
+./scripts/latexmk-docker -lualatex path/to/document.tex
+```
+
+イメージ名は `LATEX_IMAGE` で変更できます。設定例は [`.env.example`](.env.example)、詳しい導入・検証方法は [docs/setup.md](docs/setup.md) を参照してください。
+
+## 環境テスト
+
+`test/` には環境だけで完結するテストを置いています。
 
 | ファイル | 検証する役割 |
 | --- | --- |
 | `1_lualatex_basic.tex` | LuaLaTeX による日本語・英語の基本組版 |
-| `2_shared_style_math.tex` | 共有 `texmf` の独自スタイル、数式、化学式 |
 | `3_minted_python.tex` | `minted`、Python、Pygments、`shell-escape` |
-| `4_hiragino_document.tex` | 通常文書用ヒラギノプリセットと Helvetica Neue |
-| `5_hiragino_beamer.tex` | Beamer 用ヒラギノプリセット、太字、数式 |
 
-基本環境の確認方法は [docs/setup.md](docs/setup.md#4-動作確認)、macOS フォントの準備と確認方法は [docs/hiragino-fonts.md](docs/hiragino-fonts.md) に記載しています。
+スタイル固有のテストとサンプルは `latex-styles` 側にあります。
 
 ## ライセンス
 
