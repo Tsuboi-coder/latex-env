@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-LATEX_IMAGE="${LATEX_IMAGE:-kazuma-latex:2026}"
+LATEX_IMAGE="${LATEX_IMAGE:-latex-env:2026}"
 
 DOCKER_ARGS=(
     --rm

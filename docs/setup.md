@@ -15,7 +15,7 @@
 ```shell
 git clone https://github.com/Tsuboi-coder/latex-env.git
 cd latex-env
-docker build -t kazuma-latex:2026 .
+docker build -t latex-env:2026 .
 ```
 
 イメージ名を変える場合は、ビルド時のタグと実行時の `LATEX_IMAGE` を一致させます。
@@ -25,13 +25,13 @@ docker build -t my-latex:2026 .
 export LATEX_IMAGE=my-latex:2026
 ```
 
-`scripts/latexmk-docker` の既定値は `kazuma-latex:2026` です。
+`scripts/latexmk-docker` の既定値は `latex-env:2026` です。
 
 ## 2. 基本環境の確認
 
 ```shell
-docker run --rm kazuma-latex:2026 lualatex --version
-docker run --rm kazuma-latex:2026 latexmk --version
+docker run --rm latex-env:2026 lualatex --version
+docker run --rm latex-env:2026 latexmk --version
 
 cd test
 ../scripts/latexmk-docker -lualatex 1_lualatex_basic.tex
@@ -69,7 +69,7 @@ export LATEX_STYLES_ROOT="$HOME/Documents/Repository/latex-styles/texmf"
 ```shell
 docker run --rm \
   -v "$LATEX_STYLES_ROOT:/root/texmf:ro" \
-  "${LATEX_IMAGE:-kazuma-latex:2026}" \
+  "${LATEX_IMAGE:-latex-env:2026}" \
   kpsewhich bookmacro-lua.sty
 ```
 
@@ -90,7 +90,7 @@ LaTeX Workshop のユーザー設定に次を追加します。`command` と `LA
       "name": "docker-lualatex",
       "command": "/absolute/path/to/latex-env/scripts/latexmk-docker",
       "env": {
-        "LATEX_IMAGE": "kazuma-latex:2026",
+        "LATEX_IMAGE": "latex-env:2026",
         "LATEX_STYLES_ROOT": "/absolute/path/to/latex-styles/texmf"
       },
       "args": [
@@ -113,13 +113,13 @@ LaTeX Workshop のユーザー設定に次を追加します。`command` と `LA
 }
 ```
 
-既存の `settings.json` がある場合は、外側の `{}` を重複させず、各プロパティを既存のオブジェクトへ追加してください。現在の配置なら `command` と `LATEX_STYLES_ROOT` は次の値です。
+既存の `settings.json` がある場合は、外側の `{}` を重複させず、各プロパティを既存のオブジェクトへ追加してください。例えば `command` と `LATEX_STYLES_ROOT` は次のように絶対パスで指定します。
 
 ```json
-"command": "/Users/kazuma/latex-env/scripts/latexmk-docker",
+"command": "/absolute/path/to/latex-env/scripts/latexmk-docker",
 "env": {
-  "LATEX_IMAGE": "kazuma-latex:2026",
-  "LATEX_STYLES_ROOT": "/Users/kazuma/Documents/Repository/latex-styles/texmf"
+  "LATEX_IMAGE": "latex-env:2026",
+  "LATEX_STYLES_ROOT": "/absolute/path/to/latex-styles/texmf"
 }
 ```
 

@@ -3,7 +3,7 @@
   "displayName": "LaTeX textsf Bold in Editor",
   "description": "Displays the contents of LaTeX \\textsf commands as bold in the VS Code editor.",
   "version": "1.0.0",
-  "publisher": "kazuma-local",
+  "publisher": "local",
   "engines": {
     "vscode": ">=1.80.0"
   },

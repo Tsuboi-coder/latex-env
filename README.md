@@ -5,7 +5,7 @@
 独自スタイルは別リポジトリの [`latex-styles`](https://github.com/Tsuboi-coder/latex-styles) で管理します。必要な場合だけ `LATEX_STYLES_ROOT` でその TEXMF ツリーをマウントします。依存方向は `latex-styles` から本環境への一方向です。
 
 ```shell
-docker build -t kazuma-latex:2026 .
+docker build -t latex-env:2026 .
 export LATEX_STYLES_ROOT="$HOME/Documents/Repository/latex-styles/texmf" # 任意
 ./scripts/latexmk-docker -lualatex path/to/document.tex
 ```
